@@ -1,0 +1,23 @@
+{
+  "name": "caca-curso_back-end",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Skipperhc/Caca-Curso_Back-end.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Skipperhc/Caca-Curso_Back-end/issues"
+  },
+  "homepage": "https://github.com/Skipperhc/Caca-Curso_Back-end#readme",
+  "dependencies": {
+    "mysql2": "^2.3.0"
+  }
+}
