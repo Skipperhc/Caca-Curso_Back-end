@@ -1,19 +1,43 @@
 (async () => {
-    const db = require('./db')
+    const db = require('./dbCurso')
 
     // console.log('Insert no banco');
     // const resultInsert = await db.insertAuthor({nome: 'Vitor', localidade: 'Curitiba'})
     // console.log(resultInsert)
 
-    const resultUpdate = await db.updateAuthor(4, { nome: 'Vitor Hainosz', localidade: 'Curitiba' })
-    console.log(resultUpdate)
+    // const resultDelete = await db.deleteAuthor(4);
+    // console.log(resultDelete)
 
-    const resultDelete = await db.deleteAuthor(4);
-    console.log(resultDelete)
+    let curso = {
+        nome:"Curso teste atualizado",
+        link: 'https:curso', 
+        temaPrincipal:'java', 
+        horas:33,
+        keywords: 'java, spring boot,',
+        likes:11, 
+        dislikes:22
+    }
 
-    console.log("SELECT * FROM author");
-    const authors = await db.selectAuthors();
-    console.log(authors);
+    // const resultUpdate = await db.insertCurso(curso)
+    // console.log(resultUpdate)
 
+    const resultUpdate = await db.selectCursoId(1);
+    resultUpdate.rowsAvaliacao.forEach(item => {
+        console.log(item.comentario)
+    });
+
+    resultUpdate.rowsCursos.forEach(item => {
+        console.log(item.nome)
+    });
+    
+    // const resultUpdate = await db.updateCurso(1, curso)
+    // console.log(resultUpdate)
+
+    // const resultDelete = await db.deleteCurso(1);
+    // console.log(resultDelete)
+
+    console.log("SELECT * FROM curso");
+    const cursos = await db.selectCursos();
+    console.log(cursos);
 
 })();
