@@ -10,7 +10,7 @@ async function selectCursoId(id) {
     const conn = await connect();
     const [cursosResult] = await conn.query('SELECT * FROM curso where idCurso=' + id);
     const [avaliacoesResult] = await conn.query('SELECT * FROM avaliacao where idCurso=' + id);
-    return { rowsCursos: cursosResult, rowsAvaliacao: avaliacoesResult};
+    return { curso: cursosResult, comentarios: avaliacoesResult};
 }
 
 // idUsuario, idCurso, comentario, dataComentario
@@ -27,8 +27,16 @@ async function insertCurso({nome, link, temaPrincipal, horas, keywords, likes, d
 
 async function insertVariosCurso(cursos) {
     const conn = await connect();
+    let arrArrays = [];
+    cursos.forEach((obj, index, array) => {
+        let objArr = [];
+        Object.keys(obj).forEach(function (item) {
+            objArr.push(obj[item])
+        });
+        arrArrays.push(objArr)
+    })
     const sql = 'INSERT INTO curso(nome, link, temaPrincipal, horas, keywords, likes, dislikes) VALUES ?;';
-    return await conn.query(sql, [cursos], (err) => {
+    return await conn.query(sql, [arrArrays], (err) => {
         if(err) throw err;
     })
 }
