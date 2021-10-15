@@ -18,8 +18,8 @@
         dislikes: 22
     }
 
-    const resultUpdate = await db.insertVariosCurso([curso, curso, curso])
-    console.log(resultUpdate)
+    // const resultUpdate = await db.insertVariosCurso([curso, curso, curso])
+    // console.log(resultUpdate)
 
     // const resultUpdate = await db.selectCursoId(1);
     // resultUpdate.comentarios.forEach(item => {
@@ -36,8 +36,8 @@
     // const resultDelete = await db.deleteCurso(1);
     // console.log(resultDelete)
 
-    // console.log("SELECT * FROM curso");
-    // const cursos = await db.selectCursos();
-    // console.log(cursos);
+    console.log("SELECT * FROM curso");
+    const cursos = await db.selectCursos();
+    console.log(cursos);
 
 })();

@@ -1,14 +1,48 @@
 const express = require('express')
-const mainController = require('./controllers/MainController')
+const cursoController = require('./controllers/CursoController')
 
 const app = express()
 const port = 3000
 
-app.get('/selectcursos', (req, res) => {
+app.use(express.json())
+
+app.get('/curso', async (req, res) => {
     try{
-        res.send(mainController());
+        let resposta = 
+        {
+            codigo : 1,
+            objeto : await cursoController.getCursos(),
+            mensagem : 'Sucesso editado'
+        }
+
+        res.status(200).send(resposta);
     } catch(err) {
         res.send(err);
+    }
+})
+
+app.post('/curso', async (req,res) => 
+{
+    try {
+        console.log(req.body);
+
+        let curso = req.body;
+
+        const retornoGravacao = await cursoController.gravarCurso(curso);
+
+        if(retornoGravacao <= 0)
+        {
+            throw new Error('Erro ao gravar o curso.');
+        }
+
+        res.status(200).send(`Curso ${curso.nome} gravado com sucesso`);
+
+    } catch (error) {
+        res.status(400).send(error.message);
+    }
+    finally
+    {
+        res.end();
     }
 })
 
