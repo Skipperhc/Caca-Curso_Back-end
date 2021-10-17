@@ -21,6 +21,9 @@ async function gravarUsuario(Usuario) {
     if (Usuario.provider == undefined) {
         throw new Error('Informe o nome do provedor de login externo do usuario');
     }
+    if(Usuario.imageUrl == undefined){
+         Usuario.imageUrl = "SEM IMAGEM"
+    }
 
     return await dbUsuario.insertUsuario(Usuario);
 }

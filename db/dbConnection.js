@@ -21,7 +21,7 @@ async function connect() {
 
     const mysql = require('mysql2/promise');
     const connection = await mysql.createConnection("mysql://root:ph1234@192.168.79.128:3306/cacacurso");
-    console.log("Conectou ao mysql");
+    // console.log("Conectou ao mysql");
     global.connection = connection;
     return connection;
 }
