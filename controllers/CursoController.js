@@ -1,5 +1,103 @@
 const dbCurso = require('../db/dbCurso')
 const Curso = require('../models/curso/Curso')
+const axios = require('axios');
+
+const keyRapidAPI = 'be85f3e96dmsh0865f88454bdfcfp1f1851jsn3d9c71f1ec71';
+
+function urlWebSearch (termo){
+    return 'https://contextualwebsearch-websearch-v1.p.rapidapi.com/api/Search/WebSearchAPI?q='+ termo +'&pageNumber=1&pageSize=10&autoCorrect=true';
+}
+
+function urlGoogleSearch (termo){
+    return 'https://google-search3.p.rapidapi.com/api/v1/search/q='+termo+'&num=10';
+}
+
+function urlBingSearch (termo){
+    return 'https://bing-web-search1.p.rapidapi.com/search?q='+ termo +'&mkt=pt-br&safeSearch=Off&textFormat=Raw&cc=br&setLang=pt';
+}
+
+function urlUdemySearch (termo){
+    return 'https://www.udemy.com/api-2.0/courses?search='+ termo +'&language=pt&page_size=10';
+}
+
+async function WebSearch(pesquisa){    
+    var config = {
+        method: 'get',
+        url: urlWebSearch(pesquisa),
+        headers: { 
+          'x-rapidapi-host': 'contextualwebsearch-websearch-v1.p.rapidapi.com', 
+          'x-rapidapi-key': keyRapidAPI
+        }
+      };
+      
+      axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+}
+
+async function GoogleSearch(pesquisa){    
+    var config = {
+        method: 'get',
+        url: urlGoogleSearch(pesquisa),
+        headers: { 
+            'x-user-agent': 'server', 
+            'x-rapidapi-host': 'google-search3.p.rapidapi.com', 
+            'x-rapidapi-key': keyRapidAPI
+        }
+      };
+      
+      axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+}
+
+async function BingSearch(pesquisa){    
+    var config = {
+        method: 'get',
+        url: urlBingSearch(pesquisa),
+        headers: { 
+            'x-bingapis-sdk': 'true', 
+            'x-rapidapi-host': 'bing-web-search1.p.rapidapi.com', 
+            'x-rapidapi-key': keyRapidAPI
+        }
+      };
+      
+      axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+}
+
+async function UdemySearch(pesquisa){    
+    var config = {
+        method: 'get',
+        url: urlUdemySearch(pesquisa),
+        headers: { 
+            'Accept': 'application/json, text/plain, */*', 
+            'Content-Type': 'application/json;charset=utf-8', 
+            'Authorization': 'Basic a3I0aVcyaE9paHdRV0hDV1Q2Vnd2OWs2aElVZUhGWVFpZmJ2QTY3SjoySE1zZnhER2tMbWQzamxYYzN0V2dPQjJsQ1hBQ0hjUThJdkwzcjlnTnlPTTdyRDNaemdCR0pCNGZLSDVaUFRHS3RzOFQyMXE3R1NuMkJZekdReEh4MHhDa1RGNEJSTzZRaURXbFMxMlhod0cxWXB4eWxOdG9BNmpjZFRLS1FGQQ=='            
+        }
+      };
+      
+      axios(config)
+      .then(function (response) {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+}
 
 async function getCursos() {
     return await dbCurso.selectCursos();
@@ -16,6 +114,8 @@ async function gravarCurso(Curso) {
 
     return await dbCurso.insertCurso(Curso);
 }
+
+
 
 module.exports = 
 {

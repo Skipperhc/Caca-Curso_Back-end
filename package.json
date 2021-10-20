@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/Skipperhc/Caca-Curso_Back-end#readme",
   "dependencies": {
+    "axios": "^0.23.0",
     "expo-facebook": "^11.3.1",
     "express": "^4.17.1",
     "mysql2": "^2.3.0",
