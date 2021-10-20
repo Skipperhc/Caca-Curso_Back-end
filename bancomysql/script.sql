@@ -49,22 +49,20 @@ CREATE TABLE IF NOT EXISTS `Curso` (
   `nome` VARCHAR(200) NOT NULL,
   `link` VARCHAR(5000) NOT NULL,
   `temaPrincipal` VARCHAR(100) NOT NULL,
-  `horas` FLOAT NULL,
+  `urlImagem` VARCHAR(2000) NULL,
   `keywords` VARCHAR(5000) NULL,
-  `likes` INT NULL DEFAULT 0,
-  `dislikes` INT NULL DEFAULT 0,
   PRIMARY KEY (`idCurso`))
 ENGINE = InnoDB;
 
 SHOW WARNINGS;
 
 -- -----------------------------------------------------
--- Table `Avaliacao`
+-- Table `AvaliacaoComentario`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Avaliacao` ;
+DROP TABLE IF EXISTS `AvaliacaoComentario` ;
 
 SHOW WARNINGS;
-CREATE TABLE IF NOT EXISTS `Avaliacao` (
+CREATE TABLE IF NOT EXISTS `AvaliacaoComentario` (
   `idAvaliacao` INT NOT NULL AUTO_INCREMENT,
   `idUsuario` INT NOT NULL,
   `idCurso` INT NOT NULL,
@@ -84,10 +82,10 @@ CREATE TABLE IF NOT EXISTS `Avaliacao` (
 ENGINE = InnoDB;
 
 SHOW WARNINGS;
-CREATE INDEX `fk_Avaliacao_Usuario_idx` ON `Avaliacao` (`idUsuario` ASC) VISIBLE;
+CREATE INDEX `fk_Avaliacao_Usuario_idx` ON `AvaliacaoComentario` (`idUsuario` ASC) VISIBLE;
 
 SHOW WARNINGS;
-CREATE INDEX `fk_Avaliacao_Curso1_idx` ON `Avaliacao` (`idCurso` ASC) VISIBLE;
+CREATE INDEX `fk_Avaliacao_Curso1_idx` ON `AvaliacaoComentario` (`idCurso` ASC) VISIBLE;
 
 SHOW WARNINGS;
 
@@ -101,7 +99,6 @@ CREATE TABLE IF NOT EXISTS `UsuarioFavoritos` (
   `idCurso` INT NOT NULL,
   `idUsuario` INT NOT NULL,
   `dataFavorito` DATETIME NOT NULL,
-  PRIMARY KEY (`idCurso`, `idUsuario`),
   CONSTRAINT `fk_Curso_has_Usuario_Curso1`
     FOREIGN KEY (`idCurso`)
     REFERENCES `Curso` (`idCurso`)
@@ -119,6 +116,36 @@ CREATE INDEX `fk_Curso_has_Usuario_Usuario1_idx` ON `UsuarioFavoritos` (`idUsuar
 
 SHOW WARNINGS;
 CREATE INDEX `fk_Curso_has_Usuario_Curso1_idx` ON `UsuarioFavoritos` (`idCurso` ASC) VISIBLE;
+
+SHOW WARNINGS;
+
+-- -----------------------------------------------------
+-- Table `AvaliacaoRapida`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `AvaliacaoRapida` ;
+
+SHOW WARNINGS;
+CREATE TABLE IF NOT EXISTS `AvaliacaoRapida` (
+  `idUsuario` INT NOT NULL,
+  `idCurso` INT NOT NULL,
+  `like` TINYINT NULL,
+  CONSTRAINT `fk_AvaliacaoRapida_Usuario1`
+    FOREIGN KEY (`idUsuario`)
+    REFERENCES `Usuario` (`idUsuario`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_AvaliacaoRapida_Curso1`
+    FOREIGN KEY (`idCurso`)
+    REFERENCES `Curso` (`idCurso`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+SHOW WARNINGS;
+CREATE INDEX `fk_AvaliacaoRapida_Usuario1_idx` ON `AvaliacaoRapida` (`idUsuario` ASC) VISIBLE;
+
+SHOW WARNINGS;
+CREATE INDEX `fk_AvaliacaoRapida_Curso1_idx` ON `AvaliacaoRapida` (`idCurso` ASC) VISIBLE;
 
 SHOW WARNINGS;
 
