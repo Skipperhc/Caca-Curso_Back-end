@@ -1,29 +1,33 @@
 //connection PP
 
-// async function connect() {
-//     if (global.connection && global.connection.stat !== 'disconected')
-//         return global.connection
-
-//     const mysql = require('mysql2/promise');
-//     const connection = await mysql.createConnection("mysql://user:123123@localhost:3306/cacacurso");
-//     console.log("Conectou ao mysql");
-//     global.connection = connection;
-//     return connection;
-// }
-
-// module.exports = {connect}
-
-//connection PH
+require('dotenv/config');
 
 async function connect() {
     if (global.connection && global.connection.stat !== 'disconected')
         return global.connection
 
     const mysql = require('mysql2/promise');
-    const connection = await mysql.createConnection("mysql://root:ph1234@192.168.79.128:3306/cacacurso");
+    const connection = await mysql.createConnection("mysql://" + process.env.userDb + ":" + process.env.passwordDb + "@" + process.env.localhost + ":3306/cacacurso");
     console.log("Conectou ao mysql");
     global.connection = connection;
     return connection;
 }
 
-module.exports = {connect}
+connect()
+
+module.exports = { connect }
+
+//connection PH
+
+// async function connect() {
+//     if (global.connection && global.connection.stat !== 'disconected')
+//         return global.connection
+
+//     const mysql = require('mysql2/promise');
+//     const connection = await mysql.createConnection("mysql://"+process.env.userDb+":"+process.env.passwordDb+"@"+process.env.localhost+":3306/cacacurso");
+//     console.log("Conectou ao mysql");
+//     global.connection = connection;
+//     return connection;
+// }
+
+module.exports = { connect }
