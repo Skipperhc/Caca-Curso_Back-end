@@ -1,9 +1,9 @@
-const usuarioService = require('../services/UsuarioService');
+const avaliacaoService = require('../services/AvalicaoService');
 
 const getById = async (req, res) => {
     try {
-        const usuario = await usuarioService.getById(req.params.Id);
-        res.status(200).json(usuario);
+        const avaliacao = await usuarioService.getById(req.params.Id);
+        res.status(200).json(avaliacao);
     } catch (err) {
         res.status(404).json({
             message: `Não foi encontrado um usuário com este id: ${req.params.Id}!`,
@@ -14,11 +14,11 @@ const getById = async (req, res) => {
 
 const getAll = async (req, res) => {
     try {
-        const usuarios = await usuarioService.getAll();
-        res.status(200).json(usuarios);
+        const avaliacoes = await avaliacaoService.getAll();
+        res.status(200).json(avaliacoes);
     } catch (err) {
         res.status(404).json({
-            message: `Erro ao buscar usuários!`,
+            message: `Erro ao buscar avaliações!`,
             error: err.toString(),
         });
     }
@@ -26,16 +26,14 @@ const getAll = async (req, res) => {
 
 const create = async ({body}, res) => {
     try {
-        const usuario = {
-            Email: body.email,
-            Nome: body.nome,
-            IdThirdParty: body.idThirdParty,
-            UrlImagem: body.urlImagem ? body.urlImagem : "Sem imagem",
-            Provider: body.provider,
+        const avaliacao = {
+            Usuario_id: body.usuario_id,
+            Curso_id: body.curso_id,
+            Comentario: body.comentario,
         };
 
-        const newUsuario = await usuarioService.create(usuario);
-        res.status(200).json(newUsuario);
+        const newAvaliacao = await avaliacaoService.create(avaliacao);
+        res.status(200).json(newAvaliacao);
     } catch (err) {
         res.status(500).json({
             message: 'Não foi possível criar um novo usuário!',
