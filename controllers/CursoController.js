@@ -73,7 +73,27 @@ async function BingSearch(pesquisa){
       
       axios(config)
       .then(function (response) {
-        console.log(JSON.stringify(response.data));
+        
+        let respostaBing = response.data;
+
+        let respostaCurso =[];
+
+        let cursosBing = respostaBing.value;
+
+        if (cursosBing.lenght > 0) {
+          for (let index = 0; index < cursosBing.length; index++) {
+
+            const cursoBing = cursosBing[index];
+
+            let keyWords = cursoBing.snippet.replace(' ', '-');
+
+            let curso = new Curso(cursoBing.name,cursoBing.url,pesquisa, cursoBing.thumbnailUrl, keyWords);
+
+            respostaCurso.push(curso);
+          }
+
+          return respostaCurso;
+        }
       })
       .catch(function (error) {
         console.log(error);
