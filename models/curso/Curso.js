@@ -7,8 +7,6 @@ class Curso
         this.temaPrincipal = temaPrincipal;
         this.urlImagem = urlImagem;
         this.keywords = keywords;
-        this.likes = likes;
-        this.dislikes = dislikes;
     };
 }
 

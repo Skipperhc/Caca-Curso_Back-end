@@ -9,6 +9,15 @@ async function selectCursos() {
     return rows.rows;
 }
 
+async function selectCursosByKeyword(keyword) {
+    const conn = await connect();
+    const rows = await conn.query(`SELECT * FROM Curso where keywords like('%${keyword}%')`);
+
+    console.log(rows);
+
+    return rows.rows;
+}
+
 async function selectCursoId(id) {
     const conn = await connect();
     const [cursosResult] = await conn.query('SELECT * FROM Curso where idCurso=' + id);
