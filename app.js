@@ -26,7 +26,7 @@ app.get('/curso', async (req, res) => {
     try{
         var query = require('url').parse(req.url,true).query;
 
-        let pesquisa = query.p;
+        let pesquisa = decodeURIComponent(query.p);
 
         let resposta = 
         {
