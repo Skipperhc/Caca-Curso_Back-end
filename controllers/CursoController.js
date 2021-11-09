@@ -198,6 +198,10 @@ async function PesquisarCursos(pesquisa) {
     throw new Error('Informe um termo para a pesquisa dos cursos.');
   }
 
+  if(pesquisa.includes('curso') == false || pesquisa.includes('course') == false) {
+    pesquisa = 'curso ' + pesquisa;
+  }
+
   const listaWS = await WebSearch(pesquisa);
 
   const listaGoogle = await GoogleSearch(pesquisa);
