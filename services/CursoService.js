@@ -52,36 +52,36 @@ const create = async (curso) => {
 };
 
 const update = async (curso) => {
-    const updatedAccount = await models.Accounts.update(account, {
+    const updatedCurso = await models.Curso.update(curso, {
         where: {
-            account_number: account.account_number,
+            Id: curso.Id,
         },
     });
 
-    if (updatedAccount[0] > 0) {
+    if (updatedCurso[0] > 0) {
         return {
-            ...account,
-            message: 'Account updated successfully!',
+            ...curso,
+            message: 'Curso atualizado com sucesso!',
         };
     } else {
-        throw new Error('Not Found or Updated!');
+        throw new Error('Não encontrado ou atualizado!');
     }
 };
 
-const remove = async (account_number) => {
-    const removedAccount = await models.Accounts.destroy({
+const remove = async (curso_Id) => {
+    const removedCurso = await models.Curso.destroy({
         where: {
-            account_number: parseInt(account_number),
+            Id: parseInt(curso_Id),
         },
     });
 
-    if (removedAccount > 0) {
+    if (removedCurso > 0) {
         return {
-            account_number,
-            message: 'Account removed successfully!',
+            curso_Id,
+            message: 'Curso deletado com sucesso!',
         };
     } else {
-        throw new Error('Not Found or Removed!');
+        throw new Error('Não encontrado ou deletado!');
     }
 };
 

@@ -22,19 +22,30 @@ const getById = async (usuario_Id) => {
     return cursoMap;
 };
 
+// exemplo com include, da pra brincar bastante com isso daqui
+// const getAll = async () => {
+//     const usuarios = await models.Usuario.findAll({
+//         include: [
+//             {
+//                 as: 'avaliacoes',
+//                 model: models.Avaliacao,
+//                 include: {
+//                     as: 'Curso',
+//                     model: models.Curso
+//                 }
+//             }
+//         ]
+//     });
+
+//     if (!usuarios) {
+//         throw new Error('Curso não encontrado!');
+//     }
+
+//     return usuarios;
+// };
+
 const getAll = async () => {
-    const usuarios = await models.Usuario.findAll({
-        include: [
-            {
-                as: 'avaliacoes',
-                model: models.Avaliacao,
-                include: {
-                    as: 'Curso',
-                    model: models.Curso
-                }
-            }
-        ]
-    });
+    const usuarios = await models.Usuario.findAll();
 
     if (!usuarios) {
         throw new Error('Curso não encontrado!');
@@ -48,37 +59,37 @@ const create = async (usuario) => {
     return newUsuario;
 };
 
-const update = async (curso) => {
-    const updatedAccount = await models.Accounts.update(account, {
+const update = async (usuario) => {
+    const updatedUsuario = await models.Usuario.update(usuario, {
         where: {
-            account_number: account.account_number,
+            Id: usuario.Id,
         },
     });
 
-    if (updatedAccount[0] > 0) {
+    if (updatedUsuario[0] > 0) {
         return {
-            ...account,
-            message: 'Account updated successfully!',
+            ...usuario,
+            message: 'Usuário atualizado com sucesso!',
         };
     } else {
-        throw new Error('Not Found or Updated!');
+        throw new Error('Não encontrado ou atualizado!');
     }
 };
 
-const remove = async (account_number) => {
-    const removedAccount = await models.Accounts.destroy({
+const remove = async (usuario_Id) => {
+    const removedUsuario = await models.Usuario.destroy({
         where: {
-            account_number: parseInt(account_number),
+            Id: parseInt(usuario_Id),
         },
     });
 
-    if (removedAccount > 0) {
+    if (removedUsuario > 0) {
         return {
-            account_number,
-            message: 'Account removed successfully!',
+            usuario_Id,
+            message: 'Usuário excluido com sucesso!',
         };
     } else {
-        throw new Error('Not Found or Removed!');
+        throw new Error('Não encontrado ou excluido!');
     }
 };
 

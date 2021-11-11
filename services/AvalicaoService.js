@@ -1,9 +1,9 @@
 const models = require('../models');
 
-const getById = async (usuario_Id) => {
-    const usuario = await models.Usuario.findOne({
+const getById = async (avaliacao_Id) => {
+    const usuario = await models.Avaliacao.findOne({
         where: {
-            Id: parseInt(usuario_Id),
+            Id: parseInt(avaliacao_Id),
         },
     });
 
@@ -14,7 +14,8 @@ const getById = async (usuario_Id) => {
     return usuario;
 };
 
-const getAll = async () => {
+// exemplo com select entre tabelas
+const getAllWithJoins = async () => {
     const avaliacoes = await models.Avaliacao.findAll({
         include: [
             {
@@ -29,7 +30,17 @@ const getAll = async () => {
     });
 
     if (!avaliacoes) {
-        throw new Error('Curso não encontrado!');
+        throw new Error('Erro ao tentar encontrar as avaliações!');
+    }
+
+    return avaliacoes;
+};
+
+const getAll = async () => {
+    const avaliacoes = await models.Avaliacao.findAll();
+
+    if (!avaliacoes) {
+        throw new Error('Erro ao buscar pelas avaliações!');
     }
 
     return avaliacoes;
@@ -40,43 +51,44 @@ const create = async (avaliacao) => {
     return newAvaliacao;
 };
 
-const update = async (curso) => {
-    const updatedAccount = await models.Accounts.update(account, {
+const update = async (avaliacao) => {
+    const updatedAvaliacao = await models.Avaliacao.update(avaliacao, {
         where: {
-            account_number: account.account_number,
+            Id: avaliacao.Id,
         },
     });
 
-    if (updatedAccount[0] > 0) {
+    if (updatedAvaliacao[0] > 0) {
         return {
-            ...account,
-            message: 'Account updated successfully!',
+            ...avaliacao,
+            message: 'Avaliação atualizada com sucesso!',
         };
     } else {
-        throw new Error('Not Found or Updated!');
+        throw new Error('Não encontrada ou atualizada!');
     }
 };
 
-const remove = async (account_number) => {
-    const removedAccount = await models.Accounts.destroy({
+const remove = async (avaliacao_Id) => {
+    const removedAvaliacao = await models.Avaliacao.destroy({
         where: {
-            account_number: parseInt(account_number),
+            Id: parseInt(avaliacao_Id),
         },
     });
 
-    if (removedAccount > 0) {
+    if (removedAvaliacao > 0) {
         return {
-            account_number,
-            message: 'Account removed successfully!',
+            avaliacao_Id,
+            message: 'Avaliação excluida com sucesso!',
         };
     } else {
-        throw new Error('Not Found or Removed!');
+        throw new Error('Não encontrada ou excluida!');
     }
 };
 
 module.exports = {
     getById,
     getAll,
+    getAllWithJoins,
     create,
     update,
     remove,

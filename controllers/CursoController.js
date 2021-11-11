@@ -48,32 +48,34 @@ const create = async ({body}, res) => {
 
 const update = async (req, res) => {
     try {
-        const updatedAccount = await cursoService.updateAccount(req.body);
-        res.status(200).json(updatedAccount);
+        const updated = await cursoService.update(req.body);
+        res.status(200).json(updated);
     } catch (err) {
         res.status(500).json({
-            message: 'Não foi possível alterar esta conta!',
+            message: 'Não foi possível alterar este curso!',
             error: err.toString(),
         });
     }
 };
 
-const remove = async (req, res) => {
-    try {
-        const removedAccount = await cursoService.removeAccount(req.params.id);
-        res.status(200).json(removedAccount);
-    } catch (err) {
-        res.status(500).json({
-            message: 'Não foi possível remover esta conta!',
-            error: err.toString(),
-        });
-    }
-};
+// TODO: planejar como será feito a exclusão de um curso, se iremos remover somente ele, ou tudo relacionado a ele
+// const remove = async (req, res) => {
+//     try {
+//         console.log('chegou aqui com o id', req)
+//         const removed = await cursoService.remove(req.params.id);
+//         res.status(200).json(removed);
+//     } catch (err) {
+//         res.status(500).json({
+//             message: 'Não foi possível remover este curso!',
+//             error: err.toString(),
+//         });
+//     }
+// };
 
 module.exports = {
     getById,
     getAll,
     create,
     update,
-    remove,
+    // remove,
 };

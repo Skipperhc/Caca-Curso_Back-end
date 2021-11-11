@@ -5,8 +5,8 @@ const port = process.env.port | 3000
 const cursoRoutes = require('./routes/CursoRoutes');
 const usuarioRoutes = require('./routes/UsuarioRoutes');
 const avaliacaoRoutes = require('./routes/AvaliacaoRoutes');
-// const avaliacaoGeralRoutes = require('./routes/AvaliacaoGeralRoutes');
-// const usuarioFavoritosRoutes = require('./routes/UsuarioFavoritosRoutes');
+const avaliacaoGeralRoutes = require('./routes/AvaliacaoGeralRoutes');
+const usuarioFavoritosRoutes = require('./routes/UsuarioFavoritosRoutes');
 
 
 const app = express()
@@ -16,15 +16,21 @@ app.use(express.json())
 //Routes
 app.use('/curso', cursoRoutes);
 app.use('/usuario', usuarioRoutes);
+/* 
+  todo: criar o endpoint para pegar o getAllWithJoins
+  avaliacaoRoutes
+  avaliacaoGeralRoutes
+  usuarioFavoritosRoutes
+*/
 app.use('/avaliacao', avaliacaoRoutes);
-// app.use('/avaliacaogeral', avaliacaoGeralRoutes);
-// app.use('/favoritousuario', usuarioFavoritosRoutes);
+app.use('/avaliacaogeral', avaliacaoGeralRoutes);
+app.use('/usuariofavoritos', usuarioFavoritosRoutes);
 
 app.get('/', (req, res) => {
-    res.status(200).json({
-      message: 'API em funcionamento!',
-    });
+  res.status(200).json({
+    message: 'API em funcionamento!',
   });
+});
 
 app.listen(process.env.port, () => {
   console.log(`Executando em: http://localhost:${port}`)
