@@ -262,6 +262,35 @@ const getById = async (curso_Id) => {
     return cursoMap;
 };
 
+const getByLink = async (curso_Link) => {
+    const curso = await models.Curso.findOne({
+        where: {
+            link: curso_Link,
+        },
+    });
+
+    console.log('Ele procurou pelo link')
+
+    if (!curso) {
+        console.log('E não encontrou no banco')
+
+        return null;
+    }
+
+    const cursoMap = {
+        id: curso.id,
+        nome: curso.Nome,
+        link: curso.Link,
+        temaPrincipal: curso.TemaPrincipal,
+        UrlImagem: curso.UrlImagem ? curso.UrlImagem : "Sem imagem",
+        keywords: curso.keywords ? curso.keywords : "Sem palavras chaves",
+    };
+
+    console.log('encontrou e vai retornar o curso existente', cursoMap)
+
+    return cursoMap;
+};
+
 const getAll = async () => {
     const cursos = await models.Curso.findAll({
         include: [
@@ -286,7 +315,6 @@ const getAll = async () => {
 };
 
 const create = async (curso) => {
-    console.log()
     const newCurso = models.Curso.create(curso);
     return newCurso;
 };
@@ -327,6 +355,7 @@ const remove = async (curso_Id) => {
 
 module.exports = {
     getById,
+    getByLink,
     getAll,
     create,
     update,

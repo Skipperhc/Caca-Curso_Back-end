@@ -8,6 +8,10 @@ const avaliacaoRoutes = require('./routes/AvaliacaoRoutes');
 const avaliacaoGeralRoutes = require('./routes/AvaliacaoGeralRoutes');
 const usuarioFavoritosRoutes = require('./routes/UsuarioFavoritosRoutes');
 
+const app = express()
+
+app.use(express.json())
+
 app.get('/curso', async (req, res) => {
     try{
         var query = require('url').parse(req.url,true).query;
@@ -26,10 +30,6 @@ app.get('/curso', async (req, res) => {
         res.send(err);
     }
 })
-
-const app = express()
-
-app.use(express.json())
 
 //Routes
 app.use('/curso', cursoRoutes);
