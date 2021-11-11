@@ -2,72 +2,26 @@ const cursoService = require('../services/CursoService');
 
 //Pedro ==================================================================================================================================================================================================================
 
-const WebSearch = async (pesquisa) => {
+const PesquisarCursos = async (req, res) => {
   try {
-    const respostaCursos = cursoService.WebSearch(pesquisa);
-    return respostaCursos
+    var query = require('url').parse(req.url, true).query;
+
+    let pesquisa = decodeURIComponent(query.p);
+
+    const listaRetorno = await cursoService.PesquisarCursos(pesquisa)
+
+    let resposta =
+    {
+      codigo: 1,
+      objeto: listaRetorno,
+      mensagem: 'Pesquisas realizada com sucesso!'
+    }
+
+    res.status(200).send(resposta);
   } catch (err) {
-    //todo: tratar o erro
+    res.send(err);
   }
 }
-
-const GoogleSearch = (pesquisa) => {
-  try {
-    const retornoCursos = cursoService.GoogleSearch(pesquisa);
-    return retornoCursos;
-  } catch (err) {
-    //todo: tratar o erro
-  }
-}
-
-const BingSearch = (pesquisa) => {
-  try {
-    const respostaCurso = cursoService.BingSearch(pesquisa)
-    return respostaCurso;
-  } catch (error) {
-    //todo: tratar erro    
-  }
-}
-
-const UdemySearch = (pesquisa) => {
-  try {
-    const retornoCursos = cursoService.UdemySearch(pesquisa);
-    return retornoCursos;
-  } catch (error) {
-    //todo: tratar erro    
-  }
-}
-
-const PesquisarCursos = (pesquisa) => {
-  try {
-    const listaRetorno = cursoService
-    return listaRetorno;
-  } catch (error) {
-    //todo: tratar erros
-  }
-}
-
-const JuntarResultados = () => {
-  try {
-    const cursos = cursoService.JuntarResultados();
-    return cursos;
-  } catch (error) {
-    //todo: tratar erros
-  }
-}
-
-async function gravarCurso(Curso) {
-  if (Curso.nome == undefined) {
-    throw new Error('Informe o nome do curso');
-  }
-
-  if (Curso.link == undefined) {
-    throw new Error('Informe o link do curso');
-  }
-
-  return await dbCurso.insertCurso(Curso);
-}
-
 
 //Pedro ==================================================================================================================================================================================================================
 
@@ -75,6 +29,18 @@ async function gravarCurso(Curso) {
 const getById = async (req, res) => {
   try {
     const curso = await cursoService.getById(req.params.Id);
+    res.status(200).json(curso);
+  } catch (err) {
+    res.status(404).json({
+      message: `Não foi encontrado um curso com este id: ${req.params.Id}`,
+      error: err.toString(),
+    });
+  }
+};
+
+const getByLink = async (req, res) => {
+  try {
+    const curso = await cursoService.getByLink(req.params.Link);
     res.status(200).json(curso);
   } catch (err) {
     res.status(404).json({
@@ -98,18 +64,24 @@ const getAll = async (req, res) => {
 
 const create = async ({ body }, res) => {
   try {
-    const curso = {
-      Nome: body.nome,
-      Link: body.link,
-      TemaPrincipal: body.temaPrincipal,
-      UrlImagem: body.urlImagem ? body.urlImagem : "",
-      Keywords: body.keywords ? body.keywords : "",
-    };
 
-    console.log(curso)
+    const linkExistente = await cursoService.getByLink(body.link);
 
-    const newCurso = await cursoService.create(curso);
-    res.status(200).json(newCurso);
+    if (linkExistente) res.status(200).json(linkExistente);
+    else {
+      const curso = {
+        Nome: body.nome,
+        Link: body.link,
+        TemaPrincipal: body.temaPrincipal,
+        UrlImagem: body.urlImagem ? body.urlImagem : "",
+        Keywords: body.keywords ? body.keywords : "",
+      };
+
+      console.log('Ele não encontrou o curso pelo link, então vai criar', curso)
+
+      const newCurso = await cursoService.create(curso);
+      res.status(200).json(newCurso);
+    }
   } catch (err) {
     res.status(500).json({
       message: 'Não foi possível criar um novo curso!',
@@ -147,13 +119,9 @@ const update = async (req, res) => {
 module.exports = {
   getById,
   getAll,
+  getByLink,
   create,
   update,
   PesquisarCursos,
-  WebSearch,
-  GoogleSearch,
-  BingSearch,
-  UdemySearch,
-  JuntarResultados,
   // remove,
 };
