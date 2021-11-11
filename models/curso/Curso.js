@@ -4,7 +4,7 @@ class Curso
     {
         this.nome = nome;
         this.link = link;
-        this.temaPrincipal = temaPrincipal;
+        this.temaPrincipal = decodeURIComponent(temaPrincipal.replace('curso','').replace('course',''));
         this.urlImagem = urlImagem;
         this.keywords = keywords;
     };

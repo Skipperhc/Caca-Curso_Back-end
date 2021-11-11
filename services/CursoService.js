@@ -49,7 +49,7 @@ async function WebSearch(pesquisa) {
                 for (let index = 0; index < h.GetLength(listaCursosWS); index++) {
                     const cursoWS = listaCursosWS[index];
 
-                    let keywords = cursoWS.description.replace(/\s/g, '-');
+                    let keywords = h.ToKeyWords(cursoWS.description);
 
                     let curso = new Curso(cursoWS.title, cursoWS.url, pesquisa, cursoWS.image.url, keywords);
 
@@ -89,7 +89,7 @@ async function GoogleSearch(pesquisa) {
                 for (let index = 0; index < h.GetLength(listaCursoGoogle); index++) {
                     const cursoGoogle = listaCursoGoogle[index];
 
-                    let keyWords = cursoGoogle.description.replace(/\s/g, '-');
+                    let keyWords = h.ToKeyWords(cursoGoogle.description);
 
                     let curso = new Curso(cursoGoogle.title, cursoGoogle.link, pesquisa, null, keyWords);
 
@@ -130,7 +130,7 @@ async function BingSearch(pesquisa) {
 
                     const cursoBing = cursosBing[index];
 
-                    let keyWords = cursoBing.snippet.replace(/\s/g, '-');
+                    let keyWords = h.ToKeyWords(cursoBing.snippet);
 
                     let curso = new Curso(cursoBing.name, cursoBing.url, pesquisa, cursoBing.thumbnailUrl, keyWords);
 
@@ -138,10 +138,9 @@ async function BingSearch(pesquisa) {
                 }
             }
         }
-    })
-        .catch(function (error) {
-            console.log(error);
-        });
+    }).catch(function (error) {
+        console.log(error);
+    });
 
     return respostaCurso;
 }
@@ -175,7 +174,7 @@ async function UdemySearch(pesquisa) {
 
                     let urlCursoUdemy = urlUdemy + cursoUdemy.url;
 
-                    let keywords = cursoUdemy.published_title.replace(/\s/g, '-');
+                    let keywords = h.ToKeyWords(cursoUdemy.published_title);
 
                     let curso = new Curso(cursoUdemy.title, urlCursoUdemy, pesquisa, cursoUdemy.image_480x270, keywords);
 
@@ -200,6 +199,8 @@ async function PesquisarCursos(pesquisa) {
     if (pesquisa.includes('curso') == false || pesquisa.includes('course') == false) {
         pesquisa = 'curso ' + pesquisa;
     }
+
+    pesquisa = encodeURIComponent(pesquisa);
 
     const listaWS = await WebSearch(pesquisa);
 
