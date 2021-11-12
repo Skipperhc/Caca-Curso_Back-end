@@ -202,13 +202,13 @@ async function PesquisarCursos(pesquisa) {
 
     pesquisa = encodeURIComponent(pesquisa);
 
-    const listaWS = await WebSearch(pesquisa);
+    const listaUdemy = await UdemySearch(pesquisa);
 
     const listaGoogle = await GoogleSearch(pesquisa);
 
     const listaBing = await BingSearch(pesquisa);
 
-    const listaUdemy = await UdemySearch(pesquisa);
+    const listaWS = await WebSearch(pesquisa);
 
     //let listaBanco = await dbCurso.selectCursos();
 
@@ -220,6 +220,8 @@ async function PesquisarCursos(pesquisa) {
 function JuntarResultados() {
     let cursos = [];
 
+    let palavrasDefinemCurso = ["curso","course","aprenda","learn"];
+
     for (let index = 0; index < arguments.length; index++) { //percorre os multiplos argumentos
         const listaCurso = arguments[index];
 
@@ -228,8 +230,26 @@ function JuntarResultados() {
                 const curso = listaCurso[indice];
 
                 if (cursos.some(c => c.link === curso.link) == false) { //não contém um curso de mesmo link,
-                    if ((curso.keywords.includes('curso') || curso.keywords.includes('course')) || (curso.nome.includes('curso') || curso.nome.includes('course'))) {
-                        cursos.push(curso);
+                    // if (((curso.keywords.includes('curso') || curso.keywords.includes('course'))) || 
+                    //     ((curso.nome.includes('curso') || curso.nome.includes('course')))) { //se contém curso ou course no nome
+                    //     if (curso.keyWords.includes(curso.temaPrincipal)) {
+                    //         cursos.push(curso);    
+                    //     }
+                    // }
+
+                    if (curso.link.toLowerCase().includes('udemy')){
+                        if (curso.keywords.toLowerCase().includes(curso.temaPrincipal.toLowerCase())) {
+                            cursos.push(curso);    
+                        }
+                        
+                        console.log('sim');
+                    }
+                    else if (((curso.keywords.toLowerCase().includes('curso') || curso.keywords.toLowerCase().includes('course'))) || 
+                        ((curso.nome.toLowerCase().includes('curso') || curso.nome.toLowerCase().includes('course')))) { //se contém curso ou course no nome
+                            if (curso.keywords.toLowerCase().includes(curso.temaPrincipal.toLowerCase())) {
+                                cursos.push(curso);
+                                console.log('add');
+                            }
                     }
                 }
             }
