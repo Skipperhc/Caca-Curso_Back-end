@@ -220,7 +220,7 @@ async function PesquisarCursos(pesquisa) {
 function JuntarResultados() {
     let cursos = [];
 
-    let palavrasDefinemCurso = ["curso","course","aprenda","learn"];
+    let palavrasDefinemCurso = ["curso", "course", "aprenda", "learn"];
 
     for (let index = 0; index < arguments.length; index++) { //percorre os multiplos argumentos
         const listaCurso = arguments[index];
@@ -237,19 +237,16 @@ function JuntarResultados() {
                     //     }
                     // }
 
-                    if (curso.link.toLowerCase().includes('udemy')){
+                    if (curso.link.toLowerCase().includes('udemy')) {
                         if (curso.keywords.toLowerCase().includes(curso.temaPrincipal.toLowerCase())) {
-                            cursos.push(curso);    
+                            cursos.push(curso);
                         }
-                        
-                        console.log('sim');
                     }
-                    else if (((curso.keywords.toLowerCase().includes('curso') || curso.keywords.toLowerCase().includes('course'))) || 
+                    else if (((curso.keywords.toLowerCase().includes('curso') || curso.keywords.toLowerCase().includes('course'))) ||
                         ((curso.nome.toLowerCase().includes('curso') || curso.nome.toLowerCase().includes('course')))) { //se contém curso ou course no nome
-                            if (curso.keywords.toLowerCase().includes(curso.temaPrincipal.toLowerCase())) {
-                                cursos.push(curso);
-                                console.log('add');
-                            }
+                        if (curso.keywords.toLowerCase().includes(curso.temaPrincipal.toLowerCase())) {
+                            cursos.push(curso);
+                        }
                     }
                 }
             }
@@ -284,9 +281,26 @@ const getById = async (curso_Id) => {
 };
 
 const getByLink = async (curso_Link) => {
+    console.log('procurando com o link:', curso_Link)
     const curso = await models.Curso.findOne({
+        include: [
+            {
+                model: models.Avaliacao,
+                as: 'Avaliacoes',
+                include: {
+                    as: 'Usuario',
+                    model: models.Usuario
+                }
+            }
+        ],
+        include: [
+            {
+                model: models.AvaliacaoGeral,
+                as: 'AvaliacoesGerais'
+            }
+        ],
         where: {
-            link: curso_Link,
+            Link: curso_Link,
         },
     });
 
@@ -298,18 +312,9 @@ const getByLink = async (curso_Link) => {
         return null;
     }
 
-    const cursoMap = {
-        id: curso.id,
-        nome: curso.Nome,
-        link: curso.Link,
-        temaPrincipal: curso.TemaPrincipal,
-        UrlImagem: curso.UrlImagem ? curso.UrlImagem : "Sem imagem",
-        keywords: curso.keywords ? curso.keywords : "Sem palavras chaves",
-    };
+    console.log('encontrou e vai retornar o curso existente', curso)
 
-    console.log('encontrou e vai retornar o curso existente', cursoMap)
-
-    return cursoMap;
+    return curso;
 };
 
 const getAll = async () => {

@@ -12,25 +12,6 @@ const app = express()
 
 app.use(express.json())
 
-app.get('/curso', async (req, res) => {
-    try{
-        var query = require('url').parse(req.url,true).query;
-
-        let pesquisa = decodeURIComponent(query.p);
-
-        let resposta = 
-        {
-            codigo : 1,
-            objeto : await cursoController.PesquisarCursos(pesquisa),
-            mensagem : 'Pesquisas realizada com sucesso!'
-        }
-
-        res.status(200).send(resposta);
-    } catch(err) {
-        res.send(err);
-    }
-})
-
 //Routes
 app.use('/curso', cursoRoutes);
 app.use('/usuario', usuarioRoutes);

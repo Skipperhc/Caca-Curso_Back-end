@@ -1,3 +1,4 @@
+const { link } = require('fs');
 const cursoService = require('../services/CursoService');
 
 //Pedro ==================================================================================================================================================================================================================
@@ -29,7 +30,11 @@ const PesquisarCursos = async (req, res) => {
 const getById = async (req, res) => {
   try {
     const curso = await cursoService.getById(req.params.Id);
-    res.status(200).json(curso);
+    const resposta = {
+      codigo: 200,
+      objeto: curso
+    }
+    res.status(200).json(resposta);
   } catch (err) {
     res.status(404).json({
       message: `Não foi encontrado um curso com este id: ${req.params.Id}`,
@@ -40,8 +45,13 @@ const getById = async (req, res) => {
 
 const getByLink = async (req, res) => {
   try {
-    const curso = await cursoService.getByLink(req.params.Link);
-    res.status(200).json(curso);
+    console.log('Link do curso: ', req.headers.link)
+    const curso = await cursoService.getByLink(req.headers.link);
+    const resposta = {
+      codigo: 200,
+      objeto: curso
+    }
+    res.status(200).json(resposta);
   } catch (err) {
     res.status(404).json({
       message: `Não foi encontrado um curso com este id: ${req.params.Id}`,
@@ -65,24 +75,39 @@ const getAll = async (req, res) => {
 const create = async ({ body }, res) => {
   try {
 
-    const linkExistente = await cursoService.getByLink(body.link);
+    console.log("Iniciando o create do curso: ", body)
 
-    if (linkExistente) res.status(200).json(linkExistente);
+    const linkExistente = await cursoService.getByLink(body.curso.link);
+
+    if (linkExistente) {
+      const Like = 0
+      const Dislike = 0
+      linkExistente.avaliacoesGerais.forEach(item => {
+        item.AvaliacaoGeral ? Like = Like + 1 : Dislike = Dislike + 1
+      });
+      linkExistente = { ...linkExistente, Like, Dislike }
+      res.status(200).json(linkExistente);
+    }
     else {
       const curso = {
-        Nome: body.nome,
-        Link: body.link,
-        TemaPrincipal: body.temaPrincipal,
-        UrlImagem: body.urlImagem ? body.urlImagem : "",
-        Keywords: body.keywords ? body.keywords : "",
+        Nome: body.curso.nome,
+        Link: body.curso.link,
+        TemaPrincipal: body.curso.temaPrincipal,
+        UrlImagem: body.curso.urlImagem ? body.curso.urlImagem : "",
+        Keywords: body.curso.keywords ? body.curso.keywords : "",
       };
 
       console.log('Ele não encontrou o curso pelo link, então vai criar', curso)
 
       const newCurso = await cursoService.create(curso);
-      res.status(200).json(newCurso);
+      const resposta = {
+        codigo: 201,
+        objeto: newCurso
+      }
+      res.status(200).json(resposta);
     }
   } catch (err) {
+    console.log(err)
     res.status(500).json({
       message: 'Não foi possível criar um novo curso!',
       error: err.toString(),
