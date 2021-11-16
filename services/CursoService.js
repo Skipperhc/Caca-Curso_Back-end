@@ -286,7 +286,7 @@ const getByLink = async (curso_Link) => {
         include: [
             {
                 model: models.Avaliacao,
-                as: 'Avaliacoes',
+                as: 'avaliacoes',
                 include: {
                     as: 'Usuario',
                     model: models.Usuario
@@ -296,7 +296,7 @@ const getByLink = async (curso_Link) => {
         include: [
             {
                 model: models.AvaliacaoGeral,
-                as: 'AvaliacoesGerais'
+                as: 'avaliacoesGerais'
             }
         ],
         where: {
@@ -312,9 +312,18 @@ const getByLink = async (curso_Link) => {
         return null;
     }
 
-    console.log('encontrou e vai retornar o curso existente', curso)
+    let linkExistente = curso.dataValues
 
-    return curso;
+    const Like = 0
+    const Dislike = 0
+    linkExistente.avaliacoesGerais.forEach(item => {
+      item.AvaliacaoGeral ? Like = Like + 1 : Dislike = Dislike + 1
+    });
+    linkExistente = { ...linkExistente, Like, Dislike }
+
+    console.log('encontrou e vai retornar o curso existente', linkExistente)
+
+    return linkExistente;
 };
 
 const getAll = async () => {

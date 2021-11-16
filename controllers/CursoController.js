@@ -53,6 +53,7 @@ const getByLink = async (req, res) => {
     }
     res.status(200).json(resposta);
   } catch (err) {
+    console.log(err)
     res.status(404).json({
       message: `Não foi encontrado um curso com este id: ${req.params.Id}`,
       error: err.toString(),
@@ -74,21 +75,15 @@ const getAll = async (req, res) => {
 
 const create = async ({ body }, res) => {
   try {
-
+    
     console.log("Iniciando o create do curso: ", body)
-
+    
     const linkExistente = await cursoService.getByLink(body.curso.link);
-
+    
     if (linkExistente) {
-      const Like = 0
-      const Dislike = 0
-      linkExistente.avaliacoesGerais.forEach(item => {
-        item.AvaliacaoGeral ? Like = Like + 1 : Dislike = Dislike + 1
-      });
-      linkExistente = { ...linkExistente, Like, Dislike }
+      console.log("curso encontrado: ", linkExistente)
       res.status(200).json(linkExistente);
-    }
-    else {
+    } else {
       const curso = {
         Nome: body.curso.nome,
         Link: body.curso.link,

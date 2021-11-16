@@ -11,7 +11,11 @@ module.exports = (sequelize, DataTypes) => {
             Curso.hasMany(models.Avaliacao, {
                 as: 'avaliacoes',
                 foreignKey: 'Curso_id'
-              });
+            });
+            Curso.hasMany(models.AvaliacaoGeral, {
+                as: 'avaliacoesGerais',
+                foreignKey: 'Curso_id'
+            });
         }
     }
     Curso.init(
