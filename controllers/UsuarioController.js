@@ -12,6 +12,18 @@ const getById = async (req, res) => {
     }
 };
 
+const getByEmail = async (req, res) => {
+    try {
+        const usuario = await usuarioService.getByEmail(req.params.email);
+        res.status(200).json(usuario);
+    } catch (err) {
+        res.status(404).json({
+            message: `Não foi encontrado um usuário com este email: ${req.params.email}!`,
+            error: err.toString(),
+        });
+    }
+};
+
 const getAll = async (req, res) => {
     try {
         const usuarios = await usuarioService.getAll();
@@ -73,6 +85,7 @@ const remove = async (req, res) => {
 
 module.exports = {
     getById,
+    getByEmail,
     getAll,
     create,
     update,

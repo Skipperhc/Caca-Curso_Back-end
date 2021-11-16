@@ -12,14 +12,24 @@ const getById = async (usuario_Id) => {
     }
 
     const cursoMap = {
-        Email: usuario.nome,
+        Email: usuario.Email,
         Nome: usuario.nome,
-        IdThirdParty: usuario.nome,
-        UrlImagem: usuario.nome,
-        Provider: usuario.nome,
+        IdThirdParty: usuario.IdThirdParty,
+        UrlImagem: usuario.UrlImagem,
+        Provider: usuario.Provider,
     };
 
     return cursoMap;
+};
+
+const getByEmail = async (usuario_Email) => {
+    const usuario = await models.Usuario.findOne({
+        where: {
+            Email: usuario_Email
+        },
+    });
+    
+    return usuario;
 };
 
 // exemplo com include, da pra brincar bastante com isso daqui
@@ -95,6 +105,7 @@ const remove = async (usuario_Id) => {
 
 module.exports = {
     getById,
+    getByEmail,
     getAll,
     create,
     update,
