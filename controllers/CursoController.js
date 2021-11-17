@@ -19,7 +19,7 @@ const PesquisarCursos = async (req, res) => {
 
     res.status(200).send(resposta);
   } catch (err) {
-    res.send(err);
+    res.status(400).send(err.message);
   }
 }
 

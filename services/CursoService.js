@@ -5,6 +5,7 @@ const models = require('../models');
 const Curso = require('../models/curso/Curso')
 const axios = require('axios');
 const h = require('../helpers/Helper');
+const dbCurso = require('../db/dbCurso');
 
 const keyRapidAPI = 'be85f3e96dmsh0865f88454bdfcfp1f1851jsn3d9c71f1ec71';
 const basicUdemyHeader = 'Basic a3I0aVcyaE9paHdRV0hDV1Q2Vnd2OWs2aElVZUhGWVFpZmJ2QTY3SjoySE1zZnhER2tMbWQzamxYYzN0V2dPQjJsQ1hBQ0hjUThJdkwzcjlnTnlPTTdyRDNaemdCR0pCNGZLSDVaUFRHS3RzOFQyMXE3R1NuMkJZekdReEh4MHhDa1RGNEJSTzZRaURXbFMxMlhod0cxWXB4eWxOdG9BNmpjZFRLS1FGQQ==';
@@ -51,7 +52,7 @@ async function WebSearch(pesquisa) {
 
                     let keywords = h.ToKeyWords(cursoWS.description);
 
-                    let curso = new Curso(cursoWS.title, cursoWS.url, pesquisa, cursoWS.image.url, keywords);
+                    let curso = new Curso(cursoWS.title, cursoWS.url, pesquisa, cursoWS.image.url, keywords, cursoWS.description, 'WebSearch');
 
                     respostaCursos.push(curso);
                 }
@@ -91,7 +92,7 @@ async function GoogleSearch(pesquisa) {
 
                     let keyWords = h.ToKeyWords(cursoGoogle.description);
 
-                    let curso = new Curso(cursoGoogle.title, cursoGoogle.link, pesquisa, null, keyWords);
+                    let curso = new Curso(cursoGoogle.title, cursoGoogle.link, pesquisa, null, keyWords, cursoGoogle.description, 'Google');
 
                     retornoCursos.push(curso);
                 }
@@ -132,7 +133,7 @@ async function BingSearch(pesquisa) {
 
                     let keyWords = h.ToKeyWords(cursoBing.snippet);
 
-                    let curso = new Curso(cursoBing.name, cursoBing.url, pesquisa, cursoBing.thumbnailUrl, keyWords);
+                    let curso = new Curso(cursoBing.name, cursoBing.url, pesquisa, cursoBing.thumbnailUrl, keyWords, cursoBing.snippet,'Bing');
 
                     respostaCurso.push(curso);
                 }
@@ -176,7 +177,7 @@ async function UdemySearch(pesquisa) {
 
                     let keywords = h.ToKeyWords(cursoUdemy.published_title);
 
-                    let curso = new Curso(cursoUdemy.title, urlCursoUdemy, pesquisa, cursoUdemy.image_480x270, keywords);
+                    let curso = new Curso(cursoUdemy.title, urlCursoUdemy, pesquisa, cursoUdemy.image_480x270, keywords, cursoUdemy.headline, 'Udemy');
 
                     retornoCursos.push(curso);
                 }
@@ -196,6 +197,8 @@ async function PesquisarCursos(pesquisa) {
         throw new Error('Informe um termo para a pesquisa dos cursos.');
     }
 
+    let pesquisaOriginal = pesquisa;
+
     if (pesquisa.includes('curso') == false || pesquisa.includes('course') == false) {
         pesquisa = 'curso ' + pesquisa;
     }
@@ -210,17 +213,15 @@ async function PesquisarCursos(pesquisa) {
 
     const listaWS = await WebSearch(pesquisa);
 
-    //let listaBanco = await dbCurso.selectCursos();
+    const listaBanco = await dbCurso.selectCursosByTemaOrKeywords(pesquisaOriginal);
 
-    let listaRetorno = JuntarResultados(listaWS, listaGoogle, listaBing, listaUdemy);
+    let listaRetorno = JuntarResultados(listaWS, listaGoogle, listaBing, listaUdemy, listaBanco);
 
     return listaRetorno;
 }
 
 function JuntarResultados() {
     let cursos = [];
-
-    let palavrasDefinemCurso = ["curso","course","aprenda","learn"];
 
     for (let index = 0; index < arguments.length; index++) { //percorre os multiplos argumentos
         const listaCurso = arguments[index];
@@ -229,26 +230,17 @@ function JuntarResultados() {
             for (let indice = 0; indice < listaCurso.length; indice++) { //percorre todas as listas que foram passadas por parametros
                 const curso = listaCurso[indice];
 
-                if (cursos.some(c => c.link === curso.link) == false) { //não contém um curso de mesmo link,
-                    // if (((curso.keywords.includes('curso') || curso.keywords.includes('course'))) || 
-                    //     ((curso.nome.includes('curso') || curso.nome.includes('course')))) { //se contém curso ou course no nome
-                    //     if (curso.keyWords.includes(curso.temaPrincipal)) {
-                    //         cursos.push(curso);    
-                    //     }
-                    // }
+                if (cursos.some(c => c.Link === curso.Link) == false) { //não contém um curso de mesmo link,
 
-                    if (curso.link.toLowerCase().includes('udemy')){
-                        if (curso.keywords.toLowerCase().includes(curso.temaPrincipal.toLowerCase())) {
+                    if (curso.Link.toLowerCase().includes('udemy')){
+                        if (curso.Keywords.toLowerCase().includes(curso.TemaPrincipal.toLowerCase())) {
                             cursos.push(curso);    
                         }
-                        
-                        console.log('sim');
                     }
-                    else if (((curso.keywords.toLowerCase().includes('curso') || curso.keywords.toLowerCase().includes('course'))) || 
-                        ((curso.nome.toLowerCase().includes('curso') || curso.nome.toLowerCase().includes('course')))) { //se contém curso ou course no nome
-                            if (curso.keywords.toLowerCase().includes(curso.temaPrincipal.toLowerCase())) {
+                    else if (((curso.Keywords.toLowerCase().includes('curso') || curso.Keywords.toLowerCase().includes('course'))) || 
+                        ((curso.Nome.toLowerCase().includes('curso') || curso.Nome.toLowerCase().includes('course')))) { //se contém curso ou course no nome
+                            if (curso.Keywords.toLowerCase().includes(curso.TemaPrincipal.toLowerCase())) {
                                 cursos.push(curso);
-                                console.log('add');
                             }
                     }
                 }

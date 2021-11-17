@@ -9,13 +9,13 @@ async function selectCursos() {
     return rows.rows;
 }
 
-async function selectCursosByKeyword(keyword) {
+async function selectCursosByTemaOrKeywords(tema) {
     const conn = await connect();
-    const rows = await conn.query(`SELECT * FROM Curso where keywords like('%${keyword}%')`);
+    const rows = await conn.query(`SELECT * FROM Curso where temaPrincipal like('%${tema}%') or keywords like('%${tema}%')`);
 
-    console.log(rows);
+    console.log(rows[0]);
 
-    return rows.rows;
+    return rows[0];
 }
 
 async function selectCursoId(id) {
@@ -28,10 +28,10 @@ async function selectCursoId(id) {
 // idUsuario, idCurso, comentario, dataComentario
 // email, nome, idThirdParty, imageUrl, provider
 
-async function insertCurso({nome, link, temaPrincipal, horas, keywords, likes, dislikes}) {
+async function insertCurso({nome, link, temaPrincipal, horas, keywords, descricao, provider}) {
     const conn = await connect();
-    const sql = 'INSERT INTO Curso(nome, link, temaPrincipal, horas, keywords, likes, dislikes) VALUES (?,?,?,?,?,?,?);';
-    const values = [nome, link, temaPrincipal, horas, keywords, likes, dislikes]
+    const sql = 'INSERT INTO Curso(nome, link, temaPrincipal, horas, keywords, descricao, provider) VALUES (?,?,?,?,?,?,?);';
+    const values = [nome, link, temaPrincipal, horas, keywords, descricao, provider]
 
     let linhasAfetadas = 0;
     const retornoBanco = await conn.query(sql, values, (err,result) => {
@@ -53,15 +53,15 @@ async function insertVariosCurso(cursos) {
         });
         arrArrays.push(objArr)
     })
-    const sql = 'INSERT INTO Curso(nome, link, temaPrincipal, horas, keywords, likes, dislikes) VALUES ?;';
+    const sql = 'INSERT INTO Curso(nome, link, temaPrincipal, horas, keywords, descricao, provider) VALUES ?;';
     return await conn.query(sql, [arrArrays], (err) => {
         if(err) throw err;
     })
 }
 
-async function updateCurso(id, {nome, link, temaPrincipal, horas, keywords, likes, dislikes}) {
+async function updateCurso(id, {nome, link, temaPrincipal, horas, keywords, descricao, provider}) {
     const conn = await connect();
-    const sql = 'UPDATE Curso SET nome=?, link=?, temaPrincipal=?, horas=?, keywords=?, likes=?, dislikes=? WHERE idCurso=?';
+    const sql = 'UPDATE Curso SET nome=?, link=?, temaPrincipal=?, horas=?, keywords=?, descricao=?, provider=? WHERE idCurso=?';
     const values = [nome, link, temaPrincipal, horas, keywords, likes, dislikes, id];
     return await conn.query(sql, values, (err) => {
         if(err) throw err;
@@ -78,6 +78,7 @@ async function deleteCurso(id) {
 
 module.exports = {
     selectCursos,
+    selectCursosByTemaOrKeywords,
     insertCurso,
     insertVariosCurso,
     updateCurso,
