@@ -61,6 +61,25 @@ const getByLink = async (req, res) => {
   }
 };
 
+const getByTema = async (req, res) => {
+  try {
+    const temas = req.headers.temas
+    console.log("Temas: ", temas)
+    const cursos = await cursoService.getByTema(temas);
+    const resposta = {
+      codigo: 200,
+      objeto: cursos
+    }
+    res.status(200).json(resposta);
+  } catch (err) {
+    console.log(err)
+    res.status(404).json({
+      message: `Não foi possivel encontrar nenhum curso com este tema: ${req.headers.tema}`,
+      error: err.toString(),
+    });
+  }
+};
+
 const getAll = async (req, res) => {
   try {
     const cursos = await cursoService.getAll();
@@ -75,11 +94,11 @@ const getAll = async (req, res) => {
 
 const create = async ({ body }, res) => {
   try {
-    
+
     console.log("Iniciando o create do curso: ", body)
-    
+
     const linkExistente = await cursoService.getByLink(body.curso.link);
-    
+
     if (linkExistente) {
       console.log("curso encontrado: ", linkExistente)
       res.status(200).json(linkExistente);
@@ -140,6 +159,7 @@ module.exports = {
   getById,
   getAll,
   getByLink,
+  getByTema,
   create,
   update,
   PesquisarCursos,

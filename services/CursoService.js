@@ -1,4 +1,5 @@
 const models = require('../models');
+const Sequelize = require('sequelize');
 
 //Pedro ==================================================================================================================================================================================================================
 
@@ -280,6 +281,40 @@ const getById = async (curso_Id) => {
     return cursoMap;
 };
 
+const getByTema = async (temas) => {
+
+    console.log("temas no service ", temas)
+
+    if (!temas) {
+        throw new Error('Temas não informados!');
+    }
+
+    const Op = Sequelize.Op;
+
+    const listaTemas = temas.split(",")
+
+    let listaCursos = []
+
+    for (i = 0; i < listaTemas.length; i++) {
+        const cursosEncontrados = await models.Curso.findAll({
+            where: {
+                TemaPrincipal: {
+                    [Op.like]: '%' + listaTemas[i] + '%',
+                }
+            },
+        })
+        listaCursos = [...listaCursos, ...cursosEncontrados]
+    }
+
+    if (!listaCursos) {
+        throw new Error('Nenhum curso encontrado!');
+    }
+
+    console.log("lista dos cursos: ", listaCursos)
+
+    return listaCursos;
+};
+
 const getByLink = async (curso_Link) => {
     console.log('procurando com o link:', curso_Link)
     const curso = await models.Curso.findOne({
@@ -317,7 +352,7 @@ const getByLink = async (curso_Link) => {
     const Like = 0
     const Dislike = 0
     linkExistente.avaliacoesGerais.forEach(item => {
-      item.AvaliacaoGeral ? Like = Like + 1 : Dislike = Dislike + 1
+        item.AvaliacaoGeral ? Like = Like + 1 : Dislike = Dislike + 1
     });
     linkExistente = { ...linkExistente, Like, Dislike }
 
@@ -392,6 +427,7 @@ module.exports = {
     getById,
     getByLink,
     getAll,
+    getByTema,
     create,
     update,
     remove,

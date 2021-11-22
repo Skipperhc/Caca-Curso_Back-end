@@ -24,7 +24,8 @@ module.exports = (sequelize, DataTypes) => {
             Link: DataTypes.STRING(5000),
             TemaPrincipal: DataTypes.STRING(100),
             UrlImagem: DataTypes.STRING(2000),
-            Keywords: DataTypes.STRING(5000)
+            Keywords: DataTypes.STRING(5000),
+            Descricao: DataTypes.TEXT
         },
         {
             sequelize,
