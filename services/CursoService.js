@@ -1,4 +1,5 @@
 const models = require('../models');
+const Sequelize = require('sequelize');
 
 //Pedro ==================================================================================================================================================================================================================
 
@@ -230,18 +231,18 @@ function JuntarResultados() {
             for (let indice = 0; indice < listaCurso.length; indice++) { //percorre todas as listas que foram passadas por parametros
                 const curso = listaCurso[indice];
 
-                if (cursos.some(c => c.Link === curso.Link) == false) { //não contém um curso de mesmo link,
+                if (cursos.some(c => c.Link === curso.Link) == false) { //não contém um curso de mesmo Link,
 
-                    if (curso.Link.toLowerCase().includes('udemy')){
+                    if (curso.Link.toLowerCase().includes('udemy')) {
                         if (curso.Keywords.toLowerCase().includes(curso.TemaPrincipal.toLowerCase())) {
-                            cursos.push(curso);    
+                            cursos.push(curso);
                         }
                     }
-                    else if (((curso.Keywords.toLowerCase().includes('curso') || curso.Keywords.toLowerCase().includes('course'))) || 
+                    else if (((curso.Keywords.toLowerCase().includes('curso') || curso.Keywords.toLowerCase().includes('course'))) ||
                         ((curso.Nome.toLowerCase().includes('curso') || curso.Nome.toLowerCase().includes('course')))) { //se contém curso ou course no nome
-                            if (curso.Keywords.toLowerCase().includes(curso.TemaPrincipal.toLowerCase())) {
-                                cursos.push(curso);
-                            }
+                        if (curso.Keywords.toLowerCase().includes(curso.TemaPrincipal.toLowerCase())) {
+                            cursos.push(curso);
+                        }
                     }
                 }
             }
@@ -275,10 +276,61 @@ const getById = async (curso_Id) => {
     return cursoMap;
 };
 
+const getByTema = async (temas) => {
+
+    console.log("temas no service ", temas)
+
+    if (!temas) {
+        throw new Error('Temas não informados!');
+    }
+
+    const Op = Sequelize.Op;
+
+    const listaTemas = temas.split(",")
+
+    let listaCursos = []
+
+    for (i = 0; i < listaTemas.length; i++) {
+        const cursosEncontrados = await models.Curso.findAll({
+            where: {
+                TemaPrincipal: {
+                    [Op.like]: '%' + listaTemas[i] + '%',
+                }
+            },
+        })
+        listaCursos = [...listaCursos, ...cursosEncontrados]
+    }
+
+    if (!listaCursos) {
+        throw new Error('Nenhum curso encontrado!');
+    }
+
+    console.log("lista dos cursos: ", listaCursos)
+
+    return listaCursos;
+};
+
 const getByLink = async (curso_Link) => {
+    console.log('procurando com o link:', curso_Link)
     const curso = await models.Curso.findOne({
+        include: [
+            {
+                model: models.Avaliacao,
+                as: 'avaliacoes',
+                include: {
+                    as: 'Usuario',
+                    model: models.Usuario
+                }
+            }
+        ],
+        include: [
+            {
+                model: models.AvaliacaoGeral,
+                as: 'avaliacoesGerais'
+            }
+        ],
         where: {
-            link: curso_Link,
+            Link: curso_Link,
         },
     });
 
@@ -290,18 +342,18 @@ const getByLink = async (curso_Link) => {
         return null;
     }
 
-    const cursoMap = {
-        id: curso.id,
-        nome: curso.Nome,
-        link: curso.Link,
-        temaPrincipal: curso.TemaPrincipal,
-        UrlImagem: curso.UrlImagem ? curso.UrlImagem : "Sem imagem",
-        keywords: curso.keywords ? curso.keywords : "Sem palavras chaves",
-    };
+    let linkExistente = curso.dataValues
 
-    console.log('encontrou e vai retornar o curso existente', cursoMap)
+    const Like = 0
+    const Dislike = 0
+    linkExistente.avaliacoesGerais.forEach(item => {
+        item.AvaliacaoGeral ? Like = Like + 1 : Dislike = Dislike + 1
+    });
+    linkExistente = { ...linkExistente, Like, Dislike }
 
-    return cursoMap;
+    console.log('encontrou e vai retornar o curso existente', linkExistente)
+
+    return linkExistente;
 };
 
 const getAll = async () => {
@@ -370,6 +422,7 @@ module.exports = {
     getById,
     getByLink,
     getAll,
+    getByTema,
     create,
     update,
     remove,

@@ -5,7 +5,8 @@ const router = express.Router();
 
 router.get('/', cursoController.getAll);
 router.get('/id/:id', cursoController.getById);
-router.get('/link/:link', cursoController.getByLink);
+router.get('/tema', cursoController.getByTema);
+router.get('/link', cursoController.getByLink);
 router.get('/pesquisa', cursoController.PesquisarCursos)
 router.post('/', cursoController.create);
 router.put('/', cursoController.update);
