@@ -2,6 +2,16 @@
 const { Model } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
     class Curso extends Model {
+        constructor(nome, link, temaPrincipal, urlImagem, keywords, descricao, provider)
+        {
+            this.Nome = nome;
+            this.Link = link;
+            this.TemaPrincipal = decodeURIComponent(temaPrincipal.replace('curso','').replace('course','')).trim();
+            this.UrlImagem = urlImagem;
+            this.Keywords = keywords;
+            this.Descricao = descricao;
+            this.Provider = provider;
+        };
         /**
          * Helper method for defining associations.
          * This method is not a part of Sequelize lifecycle.
@@ -25,7 +35,8 @@ module.exports = (sequelize, DataTypes) => {
             TemaPrincipal: DataTypes.STRING(100),
             UrlImagem: DataTypes.STRING(2000),
             Keywords: DataTypes.STRING(5000),
-            Descricao: DataTypes.TEXT
+            Descricao: DataTypes.STRING,
+            Provider: DataTypes.STRING 
         },
         {
             sequelize,

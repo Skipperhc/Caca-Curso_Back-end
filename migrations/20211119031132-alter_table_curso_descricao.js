@@ -2,17 +2,34 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    return queryInterface.addColumn(
-      'Curso',
-      'Descricao',
-      Sequelize.TEXT
-    );
+    return Promise.all([
+      queryInterface.addColumn(
+        'Curso',
+        'Descricao',
+        {
+          type: Sequelize.STRING
+        }
+      ),
+      queryInterface.addColumn(
+        'Curso',
+        'Provider',
+        {
+          type: Sequelize.STRING
+        }
+      ),
+    ]);
   },
 
   down: async (queryInterface, Sequelize) => {
-    return queryInterface.removeColumn(
-      'Curso',
-      'Descricao'
-    );
+    return Promise.all([
+      queryInterface.removeColumn(
+        'Curso',
+        'Descricao'
+      ),
+      queryInterface.removeColumn(
+        'Curso',
+        'Provider'
+      ),
+    ]);
   }
 };
