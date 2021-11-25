@@ -303,13 +303,45 @@ async function PesquisarCursos(pesquisa) {
 
     const listaBanco = await dbCurso.selectCursosByTemaOrKeywords(pesquisaOriginal);
 
-    let listaRetorno = JuntarResultados(listaWS, listaGoogle, listaBing, listaUdemy, listaBanco);
+    let lstUnificada = JuntarResultados(listaWS, listaGoogle, listaBing, listaUdemy, listaBanco);
 
-    let listaKeywords = await GetKeyWordsAzure(listaRetorno);
+    var cont = lstUnificada.length;
+    var atual = 0;
 
-    let listaFinal = FormatarKeywords(listaRetorno,listaKeywords);
 
-    return listaFinal;
+let listaFim = [];
+
+while(cont > 0)
+{
+	var atualAux = 0;
+	let listaAux = [];
+
+    var paradaFor = cont < 9 ? atual + cont : atual + 9;
+
+	for(var i = atual; i < paradaFor; i++){
+		const curso = lstUnificada[i];
+		listaAux.push(curso);
+		atualAux++;
+	}
+	
+	let listaRetornoKeywords = await GetKeyWordsAzure(listaAux);
+
+	let listaRetorno = FormatarKeywords(listaAux, listaRetornoKeywords);
+	
+	for(var j = 0; j < listaRetorno .length ;j++){		
+		listaFim.push(listaRetorno[j]);
+	}
+
+	atual += atualAux;
+
+    cont -= listaAux.length;
+}
+
+    //let listaKeywords = await GetKeyWordsAzure(listaRetorno);
+
+    //let listaFinal = FormatarKeywords(listaRetorno,listaKeywords);
+
+    return listaFim;
 }
 
 function JuntarResultados() {
