@@ -27,14 +27,14 @@ function urlUdemySearch(termo) {
     return 'https://www.udemy.com/api-2.0/courses?search=' + termo + '&language=pt&page_size=10';
 }
 
-async function GetKeyWordsAzure(listaCursos){
+async function GetKeyWordsAzure(listaCursos) {
 
     let lstKeywords = [];
 
     for (let index = 0; index < listaCursos.length; index++) {
         const curso = listaCursos[index];
 
-        lstKeywords.push({id: curso.Link,  language: "pt", text : curso.Descricao});
+        lstKeywords.push({ id: curso.Link, language: "pt", text: curso.Descricao });
     }
 
     var config = {
@@ -44,8 +44,8 @@ async function GetKeyWordsAzure(listaCursos){
             'Ocp-Apim-Subscription-Key': '494981359df94d9f9bf01ed61d78d3ce',
             'Content-Type': 'application/json'
         },
-        data:{
-            documents : lstKeywords
+        data: {
+            documents: lstKeywords
         }
     };
 
@@ -69,35 +69,35 @@ async function GetKeyWordsAzure(listaCursos){
                     for (let i = 0; i < keyWords.length; i++) {
                         const element = keyWords[i];
 
-                        
+
                         if (i == keyWords.length - 1) { //não adiciona traço no final
                             palavrasChavesCompleta += element
                         }
-                        else{
+                        else {
                             palavrasChavesCompleta += element + '-';
                         }
                     }
 
-                    lstKeywords.push({id:retornoKeywords.id, palavras: palavrasChavesCompleta});
+                    lstKeywords.push({ id: retornoKeywords.id, palavras: palavrasChavesCompleta });
                 }
             }
         }
     })
-    .catch(function (error) {
-        console.log(error);
-    });
+        .catch(function (error) {
+            console.log(error);
+        });
 
     return lstKeywords;
 }
 
-function FormatarKeywords(lstCurso, lstKeywords){
+function FormatarKeywords(lstCurso, lstKeywords) {
 
     let lstFinal = [];
 
     for (let index = 0; index < lstCurso.length; index++) {
         let curso = lstCurso[index];
 
-        const element = lstKeywords.find(x=>x.id == curso.Link);
+        const element = lstKeywords.find(x => x.id == curso.Link);
 
         curso.Keywords = element.palavras;
 
@@ -147,11 +147,11 @@ async function WebSearch(pesquisa) {
     return respostaCursos;
 }
 
-function FormatarCurso(nome, link, temaPrincipal, urlImagem, keywords, descricao, provider){
+function FormatarCurso(nome, link, temaPrincipal, urlImagem, keywords, descricao, provider) {
 
-    let tema = decodeURIComponent(temaPrincipal.replace('curso','').replace('course','')).trim();
+    let tema = decodeURIComponent(temaPrincipal.replace('curso', '').replace('course', '')).trim();
 
-    return {Nome: nome, Link: link, TemaPrincipal: tema, UrlImagem:urlImagem, Keywords:keywords, Descricao:descricao, Provider:provider}
+    return { Nome: nome, Link: link, TemaPrincipal: tema, UrlImagem: urlImagem, Keywords: keywords, Descricao: descricao, Provider: provider }
 }
 
 async function GoogleSearch(pesquisa) {
@@ -221,7 +221,7 @@ async function BingSearch(pesquisa) {
 
                     let keyWords = h.ToKeyWords(cursoBing.snippet);
 
-                    let curso = FormatarCurso(cursoBing.name, cursoBing.url, pesquisa, cursoBing.thumbnailUrl, keyWords, cursoBing.snippet,'Bing');
+                    let curso = FormatarCurso(cursoBing.name, cursoBing.url, pesquisa, cursoBing.thumbnailUrl, keyWords, cursoBing.snippet, 'Bing');
 
                     respostaCurso.push(curso);
                 }
@@ -309,37 +309,38 @@ async function PesquisarCursos(pesquisa) {
     var atual = 0;
 
 
-let listaFim = [];
+    let listaFim = [];
 
-while(cont > 0)
-{
-	var atualAux = 0;
-	let listaAux = [];
+    while (cont > 0) {
+        var atualAux = 0;
+        let listaAux = [];
 
-    var paradaFor = cont < 9 ? atual + cont : atual + 9;
+        var paradaFor = cont < 9 ? atual + cont : atual + 9;
 
-	for(var i = atual; i < paradaFor; i++){
-		const curso = lstUnificada[i];
-		listaAux.push(curso);
-		atualAux++;
-	}
-	
-	let listaRetornoKeywords = await GetKeyWordsAzure(listaAux);
+        for (var i = atual; i < paradaFor; i++) {
+            const curso = lstUnificada[i];
+            listaAux.push(curso);
+            atualAux++;
+        }
 
-	let listaRetorno = FormatarKeywords(listaAux, listaRetornoKeywords);
-	
-	for(var j = 0; j < listaRetorno .length ;j++){		
-		listaFim.push(listaRetorno[j]);
-	}
+        let listaRetornoKeywords = await GetKeyWordsAzure(listaAux);
 
-	atual += atualAux;
+        let listaRetorno = FormatarKeywords(listaAux, listaRetornoKeywords);
 
-    cont -= listaAux.length;
-}
+        for (var j = 0; j < listaRetorno.length; j++) {
+            listaFim.push(listaRetorno[j]);
+        }
+
+        atual += atualAux;
+
+        cont -= listaAux.length;
+    }
 
     //let listaKeywords = await GetKeyWordsAzure(listaRetorno);
 
     //let listaFinal = FormatarKeywords(listaRetorno,listaKeywords);
+
+    console.log("lista com keywords", listaFim)
 
     return listaFim;
 }
@@ -370,7 +371,7 @@ function JuntarResultados() {
                             }
                         }
                     }
-                    
+
                 } catch (error) {
                     console.log(error.message);
                 }

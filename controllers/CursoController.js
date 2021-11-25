@@ -46,8 +46,8 @@ const getById = async (req, res) => {
 
 const getByLink = async (req, res) => {
   try {
-    console.log('Link do curso: ', req.headers.link)
-    const curso = await cursoService.getByLink(req.headers.link);
+    console.log('Link do curso: ', req.query.link)
+    const curso = await cursoService.getByLink(req.query.link);
     const resposta = {
       codigo: 200,
       objeto: curso
@@ -56,7 +56,7 @@ const getByLink = async (req, res) => {
   } catch (err) {
     console.log(err)
     res.status(404).json({
-      message: `Não foi encontrado um curso com este id: ${req.params.Id}`,
+      message: `Não foi encontrado um curso com este link: ${req.query.link}`,
       error: err.toString(),
     });
   }
@@ -98,18 +98,18 @@ const create = async ({ body }, res) => {
 
     console.log("Iniciando o create do curso: ", body)
 
-    const linkExistente = await cursoService.getByLink(body.curso.link);
+    const linkExistente = await cursoService.getByLink(body.curso.Link);
 
     if (linkExistente) {
       console.log("curso encontrado: ", linkExistente)
       res.status(200).json(linkExistente);
     } else {
       const curso = {
-        Nome: body.curso.nome,
-        Link: body.curso.link,
-        TemaPrincipal: body.curso.temaPrincipal,
-        UrlImagem: body.curso.urlImagem ? body.curso.urlImagem : "",
-        Keywords: body.curso.keywords ? body.curso.keywords : "",
+        Nome: body.curso.Nome,
+        Link: body.curso.Link,
+        TemaPrincipal: body.curso.TemaPrincipal,
+        UrlImagem: body.curso.UrlImagem ? body.curso.UrlImagem : "",
+        Keywords: body.curso.Keywords ? body.curso.Keywords : "",
       };
 
       console.log('Ele não encontrou o curso pelo link, então vai criar', curso)
