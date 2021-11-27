@@ -428,14 +428,22 @@ const getByTema = async (temas) => {
                 }
             },
         })
-        listaCursos = [...listaCursos, ...cursosEncontrados]
+
+        cursosEncontrados.forEach(x => {
+            const cursoExiste = listaCursos.find(curso => curso.Link === x.Link)
+            if(!cursoExiste) {
+                listaCursos = [...listaCursos, ...cursosEncontrados]
+            }
+        })
     }
 
     if (!listaCursos) {
         throw new Error('Nenhum curso encontrado!');
     }
 
-    console.log("lista dos cursos: ", listaCursos)
+    listaCursos.forEach(x => {
+        console.log("lista dos cursos: ", x.Link)
+    })
 
     return listaCursos;
 };
