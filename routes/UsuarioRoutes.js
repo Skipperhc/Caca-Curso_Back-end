@@ -4,7 +4,7 @@ const usuarioController = require('../controllers/UsuarioController');
 const router = express.Router();
 
 router.get('/', usuarioController.getAll);
-router.get('/:id', usuarioController.getById);
+router.get('/id/:id', usuarioController.getById);
 router.get('/carregar/:email', usuarioController.getByEmail);
 router.post('/', usuarioController.create);
 router.put('/', usuarioController.update);

@@ -14,6 +14,46 @@ const getById = async (avaliacaoGeral_Id) => {
     return avaliacaoGeral;
 };
 
+const getLikes = async (cursoId) => {
+    const avaliacaoGeral = await models.AvaliacaoGeral.findAll({
+        where: {
+            Curso_id: cursoId,
+        },
+    });
+
+    if (!avaliacaoGeral) {
+        return null
+    }
+
+    let Like = 0
+    let Dislike = 0
+    avaliacaoGeral.forEach(item => {
+        item.AvaliacaoGeral ? Like = Like + 1 : Dislike = Dislike + 1
+    });
+
+    const like_dislike = {
+        Like,
+        Dislike
+    }
+
+    return like_dislike;
+}
+
+const getByIdCursoUsuario = async (cursoId, usuarioId) => {
+    const avaliacaoGeral = await models.AvaliacaoGeral.findOne({
+        where: {
+            Curso_id: cursoId,
+            Usuario_id: usuarioId,
+        },
+    });
+
+    if (!avaliacaoGeral) {
+        return null
+    }
+
+    return avaliacaoGeral;
+};
+
 // exemplo com select entre tabelas
 const getAllWithJoins = async () => {
     const avaliacoesGerais = await models.AvaliacaoGeral.findAll({
@@ -47,22 +87,24 @@ const getAll = async () => {
 };
 
 const create = async (avaliacaoGeral) => {
-    const newAvaliacaoGeral = models.AvaliacaoGeral.create(avaliacaoGeral);
-    return newAvaliacaoGeral;
+    const avaliacaoExistente = await getByIdCursoUsuario(avaliacaoGeral.Curso_id, avaliacaoGeral.Usuario_id)
+    if (avaliacaoExistente) {
+        return avaliacaoExistente
+    } else {
+        const newAvaliacaoGeral = await models.AvaliacaoGeral.create(avaliacaoGeral);
+        return newAvaliacaoGeral;
+    }
 };
 
 const update = async (avaliacaoGeral) => {
     const updatedAvaliacaoGeral = await models.AvaliacaoGeral.update(avaliacaoGeral, {
         where: {
-            Id: avaliacaoGeral.Id,
+            Id: avaliacaoGeral.AvaliacaoGeralId,
         },
     });
 
     if (updatedAvaliacaoGeral[0] > 0) {
-        return {
-            ...avaliacaoGeral,
-            message: 'Avaliação geral atualizada com sucesso!',
-        };
+        return updatedAvaliacaoGeral
     } else {
         throw new Error('Não encontrada ou atualizada!');
     }
@@ -87,6 +129,8 @@ const remove = async (avaliacaoGeral_Id) => {
 
 module.exports = {
     getById,
+    getByIdCursoUsuario,
+    getLikes,
     getAll,
     getAllWithJoins,
     create,

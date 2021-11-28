@@ -482,11 +482,12 @@ const getByLink = async (curso_Link) => {
 
     let linkExistente = curso.dataValues
 
-    const Like = 0
-    const Dislike = 0
+    let Like = 0
+    let Dislike = 0
     linkExistente.avaliacoesGerais.forEach(item => {
         item.AvaliacaoGeral ? Like = Like + 1 : Dislike = Dislike + 1
     });
+
     linkExistente = { ...linkExistente, Like, Dislike }
 
     console.log('encontrou e vai retornar o curso existente', linkExistente)

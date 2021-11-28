@@ -38,6 +38,7 @@ const getAll = async (req, res) => {
 
 const create = async ({ body }, res) => {
     try {
+        console.log("Criando o usuario", body)
         const usuario = {
             Email: body.email,
             Nome: body.nome,

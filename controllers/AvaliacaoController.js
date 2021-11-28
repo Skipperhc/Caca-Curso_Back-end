@@ -12,6 +12,7 @@ const getById = async (req, res) => {
     }
 };
 
+
 const getAll = async (req, res) => {
     try {
         const avaliacoes = await avaliacaoService.getAll();

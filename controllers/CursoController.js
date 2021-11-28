@@ -30,7 +30,7 @@ const PesquisarCursos = async (req, res) => {
 
 const getById = async (req, res) => {
   try {
-    const curso = await cursoService.getById(req.params.Id);
+    const curso = await cursoService.getById(req.query.Id);
     const resposta = {
       codigo: 200,
       objeto: curso
@@ -38,7 +38,7 @@ const getById = async (req, res) => {
     res.status(200).json(resposta);
   } catch (err) {
     res.status(404).json({
-      message: `Não foi encontrado um curso com este id: ${req.params.Id}`,
+      message: `Não foi encontrado um curso com este id: ${req.query.Id}`,
       error: err.toString(),
     });
   }
@@ -64,7 +64,7 @@ const getByLink = async (req, res) => {
 
 const getByTema = async (req, res) => {
   try {
-    const temas = req.headers.temas
+    const temas = req.query.temas
     console.log("Temas: ", temas)
     const cursos = await cursoService.getByTema(temas);
     const resposta = {
@@ -75,7 +75,7 @@ const getByTema = async (req, res) => {
   } catch (err) {
     console.log(err)
     res.status(404).json({
-      message: `Não foi possivel encontrar nenhum curso com este tema: ${req.headers.tema}`,
+      message: `Não foi possivel encontrar nenhum curso com este tema: ${req.query.temas}`,
       error: err.toString(),
     });
   }
