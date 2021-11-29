@@ -12,6 +12,25 @@ const getById = async (req, res) => {
     }
 };
 
+const getByIdCursoUsuario = async (req, res) => {
+    console.log("tentou procurar a avaliacao com os ids: ", req.query.curso_id, " e ", req.query.usuario_id)
+    try {
+        const usuarioFavorito = await usuarioFavoritosService.getByIdCursoUsuario(req.query.curso_id, req.query.usuario_id);
+        const resposta =
+        {
+            codigo: 200,
+            objeto: usuarioFavorito,
+            mensagem: 'Avaliação encontrada!'
+        }
+        res.status(200).json(resposta);
+    } catch (err) {
+        res.status(404).json({
+            message: `Não foi encontrado um favorito com estes ids: curso:${req.query.curso_id} e usuário: ${req.query.usuario_id}!`,
+            error: err.toString(),
+        });
+    }
+}
+
 const getAll = async (req, res) => {
     try {
         const usuarioFavoritos = await usuarioFavoritosService.getAll();
@@ -24,15 +43,16 @@ const getAll = async (req, res) => {
     }
 };
 
-const create = async ({body}, res) => {
+const create = async ({ body }, res) => {
     try {
-        const usuarioFavoritos = {
-            Usuario_id: body.usuario_id,
-            Curso_id: body.curso_id,
-        };
-
-        const newUsuarioFavorito = await usuarioFavoritosService.create(usuarioFavoritos);
-        res.status(200).json(newUsuarioFavorito);
+        const newUsuarioFavorito = await usuarioFavoritosService.create(body);
+        let resposta =
+        {
+            codigo: 201,
+            objeto: newUsuarioFavorito,
+            mensagem: 'Favorito criado com sucesso!'
+        }
+        res.status(200).json(resposta);
     } catch (err) {
         res.status(500).json({
             message: 'Não foi possível criar um novo favorito do usuário!',
@@ -44,7 +64,13 @@ const create = async ({body}, res) => {
 const update = async (req, res) => {
     try {
         const updatedUsuarioFavorito = await usuarioFavoritosService.update(req.body);
-        res.status(200).json(updatedUsuarioFavorito);
+        let resposta =
+        {
+            codigo: 201,
+            objeto: updatedUsuarioFavorito,
+            mensagem: 'Avaliação atualizada com sucesso!'
+        }
+        res.status(200).json(resposta);
     } catch (err) {
         res.status(500).json({
             message: 'Não foi possível alterar este favorito do usuário!',
@@ -67,6 +93,7 @@ const remove = async (req, res) => {
 
 module.exports = {
     getById,
+    getByIdCursoUsuario,
     getAll,
     create,
     update,

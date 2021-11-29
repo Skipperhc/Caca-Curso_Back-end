@@ -4,9 +4,10 @@ const usuarioFavoritosController = require('../controllers/UsuarioFavoritosContr
 const router = express.Router();
 
 router.get('/', usuarioFavoritosController.getAll);
-router.get('/:id', usuarioFavoritosController.getById);
+router.get('/id/:id', usuarioFavoritosController.getById);
+router.get('/cursousuario', usuarioFavoritosController.getByIdCursoUsuario);
 router.post('/', usuarioFavoritosController.create);
 router.put('/', usuarioFavoritosController.update);
-router.delete('/:id', usuarioFavoritosController.remove);
+router.delete('/id/:id', usuarioFavoritosController.remove);
 
 module.exports = router;

@@ -45,7 +45,7 @@ const getAll = async (req, res) => {
 
 const create = async ({ body }, res) => {
     try {
-        const newAvaliacao = await avaliacaoService.create(avaliacao);
+        const newAvaliacao = await avaliacaoService.create(body);
         let resposta =
         {
             codigo: 201,
@@ -67,10 +67,10 @@ const update = async (req, res) => {
         let resposta =
         {
             codigo: 201,
-            objeto: updatedAvaliacaoGeral,
+            objeto: updatedAvaliacao,
             mensagem: 'Avaliação atualizada com sucesso!'
         }
-        res.status(200).json(updatedAvaliacao);
+        res.status(200).json(resposta);
     } catch (err) {
         res.status(500).json({
             message: 'Não foi possível alterar esta avaliação!',

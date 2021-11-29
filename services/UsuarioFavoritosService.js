@@ -47,8 +47,13 @@ const getAll = async () => {
 };
 
 const create = async (usuarioFavorito) => {
-    const newUsuarioFavorito = models.UsuarioFavorito.create(usuarioFavorito);
-    return newUsuarioFavorito;
+    const usuarioFavoritoExistente = await getByIdCursoUsuario(usuarioFavorito.Curso_id, usuarioFavorito.Usuario_id)
+    if (usuarioFavoritoExistente) {
+        return usuarioFavoritoExistente
+    } else {
+        const newUsuarioFavorito = await models.UsuarioFavorito.create(usuarioFavorito);
+        return newUsuarioFavorito;
+    }
 };
 
 const update = async (usuarioFavorito) => {
@@ -59,10 +64,7 @@ const update = async (usuarioFavorito) => {
     });
 
     if (updatedUsuarioFavorito[0] > 0) {
-        return {
-            ...usuarioFavorito,
-            message: 'Favorito do usuário atualizado com sucesso!',
-        };
+        return usuarioFavorito
     } else {
         throw new Error('Não encontrado ou atualizado!');
     }
