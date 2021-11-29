@@ -110,6 +110,7 @@ const create = async ({ body }, res) => {
         TemaPrincipal: body.curso.TemaPrincipal,
         UrlImagem: body.curso.UrlImagem ? body.curso.UrlImagem : "",
         Keywords: body.curso.Keywords ? body.curso.Keywords : "",
+        Descricao: body.curso.Descricao
       };
 
       console.log('Ele não encontrou o curso pelo link, então vai criar', curso)

@@ -32,7 +32,7 @@ const getlikes = async (req, res) => {
 }
 
 const getByIdCursoUsuario = async (req, res) => {
-    console.log("tentou procurar a avaliacao com os ids: ", req.query.curso_id, " e ",req.query.usuario_id)
+    console.log("tentou procurar a avaliacaoGeral com os ids: ", req.query.curso_id, " e ", req.query.usuario_id)
     try {
         const avaliacao = await avaliacaoGeralService.getByIdCursoUsuario(req.query.curso_id, req.query.usuario_id);
         const resposta =
@@ -43,7 +43,6 @@ const getByIdCursoUsuario = async (req, res) => {
         }
         res.status(200).json(resposta);
     } catch (err) {
-        console.log("erro ", err)
         res.status(404).json({
             message: `Não foi encontrado uma avaliação com estes ids: curso:${req.query.curso_id} e usuário: ${req.query.usuario_id}!`,
             error: err.toString(),
@@ -74,7 +73,6 @@ const create = async ({ body }, res) => {
         }
         res.status(200).json(resposta);
     } catch (err) {
-        console.log(err)
         res.status(500).json({
             message: 'Não foi possível criar uma nova avaliação geral!',
             error: err.toString(),
@@ -89,7 +87,7 @@ const update = async (req, res) => {
         {
             codigo: 201,
             objeto: updatedAvaliacaoGeral,
-            mensagem: 'Avaliação geral criada com sucesso!'
+            mensagem: 'Avaliação geral atualizada com sucesso!'
         }
         res.status(200).json(resposta);
     } catch (err) {

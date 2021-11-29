@@ -9,6 +9,6 @@ router.get('/id/:id', AvalicaoGeralController.getById);
 router.get('/cursousuario', AvalicaoGeralController.getByIdCursoUsuario);
 router.post('/', AvalicaoGeralController.create);
 router.put('/', AvalicaoGeralController.update);
-router.delete('/:id', AvalicaoGeralController.remove);
+router.delete('/id/:id', AvalicaoGeralController.remove);
 
 module.exports = router;

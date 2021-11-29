@@ -14,6 +14,21 @@ const getById = async (avaliacao_Id) => {
     return usuario;
 };
 
+const getByIdCursoUsuario = async (cursoId, usuarioId) => {
+    const avaliacao = await models.Avaliacao.findOne({
+        where: {
+            Curso_id: cursoId,
+            Usuario_id: usuarioId,
+        },
+    });
+
+    if (!avaliacao) {
+        return null
+    }
+
+    return avaliacao;
+};
+
 // exemplo com select entre tabelas
 const getAllWithJoins = async () => {
     const avaliacoes = await models.Avaliacao.findAll({
@@ -47,22 +62,24 @@ const getAll = async () => {
 };
 
 const create = async (avaliacao) => {
-    const newAvaliacao = models.Avaliacao.create(avaliacao);
-    return newAvaliacao;
+    const avaliacaoExistente = await getByIdCursoUsuario(avaliacao.Curso_id, avaliacao.Usuario_id)
+    if (avaliacaoExistente) {
+        return avaliacaoExistente
+    } else {
+        const newAvaliacaoGeral = await models.Avaliacao.create(avaliacao);
+        return newAvaliacaoGeral;
+    }
 };
 
 const update = async (avaliacao) => {
     const updatedAvaliacao = await models.Avaliacao.update(avaliacao, {
         where: {
-            Id: avaliacao.Id,
+            Id: avaliacao.AvaliacaoId,
         },
     });
 
     if (updatedAvaliacao[0] > 0) {
-        return {
-            ...avaliacao,
-            message: 'Avaliação atualizada com sucesso!',
-        };
+        return updatedAvaliacao
     } else {
         throw new Error('Não encontrada ou atualizada!');
     }
@@ -88,6 +105,7 @@ const remove = async (avaliacao_Id) => {
 module.exports = {
     getById,
     getAll,
+    getByIdCursoUsuario,
     getAllWithJoins,
     create,
     update,

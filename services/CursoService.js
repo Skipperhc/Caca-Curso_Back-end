@@ -431,8 +431,8 @@ const getByTema = async (temas) => {
 
         cursosEncontrados.forEach(x => {
             const cursoExiste = listaCursos.find(curso => curso.Link === x.Link)
-            if(!cursoExiste) {
-                listaCursos = [...listaCursos, ...cursosEncontrados]
+            if (!cursoExiste) {
+                listaCursos = [...listaCursos, x]
             }
         })
     }
@@ -519,8 +519,20 @@ const getAll = async () => {
 };
 
 const create = async (curso) => {
-    const newCurso = models.Curso.create(curso);
-    return newCurso;
+    const cursoExistente = await models.Curso.findOne({
+        where: {
+            Link: curso.Link,
+        },
+    });
+
+    console.log("Curso existente: ", cursoExistente)
+
+    if (cursoExistente) {
+        return cursoExistente
+    } else {
+        const newCurso = models.Curso.create(curso);
+        return newCurso;
+    }
 };
 
 const update = async (curso) => {
