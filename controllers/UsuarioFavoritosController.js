@@ -12,15 +12,34 @@ const getById = async (req, res) => {
     }
 };
 
+const getCursosFavoritos = async (req, res) => {
+    console.log("tentou procurar os favoritos com o id: ", req.query.usuario_id)
+    try {
+        const usuarioFavoritos = await usuarioFavoritosService.getCursosFavoritos(req.query.usuario_id);
+        const resposta =
+        {
+            codigo: 200,
+            objeto: usuarioFavoritos,
+            mensagem: 'Cursos facvoritos encontrados!'
+        }
+        res.status(200).json(resposta);
+    } catch (err) {
+        res.status(404).json({
+            message: `Não foi encontrado nenhum favorito para este id: usuário:${req.query.usuario_id}!`,
+            error: err.toString(),
+        });
+    }
+}
+
 const getByIdCursoUsuario = async (req, res) => {
-    console.log("tentou procurar a avaliacao com os ids: ", req.query.curso_id, " e ", req.query.usuario_id)
+    console.log("tentou procurar os favoritos com os ids: ", req.query.curso_id, " e ", req.query.usuario_id)
     try {
         const usuarioFavorito = await usuarioFavoritosService.getByIdCursoUsuario(req.query.curso_id, req.query.usuario_id);
         const resposta =
         {
             codigo: 200,
             objeto: usuarioFavorito,
-            mensagem: 'Avaliação encontrada!'
+            mensagem: 'Favorito encontrado!'
         }
         res.status(200).json(resposta);
     } catch (err) {
@@ -45,6 +64,7 @@ const getAll = async (req, res) => {
 
 const create = async ({ body }, res) => {
     try {
+        console.log("Criando favoritos", body)
         const newUsuarioFavorito = await usuarioFavoritosService.create(body);
         let resposta =
         {
@@ -54,6 +74,7 @@ const create = async ({ body }, res) => {
         }
         res.status(200).json(resposta);
     } catch (err) {
+        console.log("Erro ao criar favorito:", err)
         res.status(500).json({
             message: 'Não foi possível criar um novo favorito do usuário!',
             error: err.toString(),
@@ -93,6 +114,7 @@ const remove = async (req, res) => {
 
 module.exports = {
     getById,
+    getCursosFavoritos,
     getByIdCursoUsuario,
     getAll,
     create,

@@ -14,6 +14,30 @@ const getById = async (usuarioFavorito_Id) => {
     return usuarioFavorito;
 };
 
+const getCursosFavoritos = async (usuarioId) => {
+    console.log("Id do usuário no service ", usuarioId)
+
+    if (!usuarioId) {
+        throw new Error('Id do usuário não informado!');
+    }
+
+    const cursosEncontrados = await models.UsuarioFavorito.findAll({
+        include: {
+            as: 'Curso',
+            model: models.Curso,
+        },
+        where: {
+            Usuario_id: usuarioId
+        },
+    })
+
+    if (!cursosEncontrados) {
+        return null;
+    }
+
+    return cursosEncontrados;
+};
+
 // exemplo com select entre tabelas
 const getAllWithJoins = async () => {
     const usuarioFavoritos = await models.UsuarioFavorito.findAll({
@@ -44,6 +68,21 @@ const getAll = async () => {
     }
 
     return usuarioFavoritos;
+};
+
+const getByIdCursoUsuario = async (cursoId, usuarioId) => {
+    const favoritoExistente = await models.UsuarioFavorito.findOne({
+        where: {
+            Curso_id: cursoId,
+            Usuario_id: usuarioId,
+        },
+    });
+
+    if (!favoritoExistente) {
+        return null
+    }
+
+    return favoritoExistente;
 };
 
 const create = async (usuarioFavorito) => {
@@ -90,6 +129,7 @@ const remove = async (usuarioFavorito_Id) => {
 module.exports = {
     getById,
     getAll,
+    getCursosFavoritos,
     getAllWithJoins,
     create,
     update,

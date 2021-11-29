@@ -3,7 +3,7 @@ const usuarioFavoritosController = require('../controllers/UsuarioFavoritosContr
 
 const router = express.Router();
 
-router.get('/', usuarioFavoritosController.getAll);
+router.get('/', usuarioFavoritosController.getCursosFavoritos);
 router.get('/id/:id', usuarioFavoritosController.getById);
 router.get('/cursousuario', usuarioFavoritosController.getByIdCursoUsuario);
 router.post('/', usuarioFavoritosController.create);
