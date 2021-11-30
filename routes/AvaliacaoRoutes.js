@@ -5,7 +5,8 @@ const router = express.Router();
 
 router.get('/', avalicaoController.getAll);
 router.get('/id/:id', avalicaoController.getById);
-router.get('/cursousuario', avalicaoController.getByIdCursoUsuario);
+router.get('/cursousuario/:id', avalicaoController.getById);
+router.get('/curso/:id', avalicaoController.getAllRatingCurso);
 router.post('/', avalicaoController.create);
 router.put('/', avalicaoController.update);
 router.delete('/id/:id', avalicaoController.remove);
