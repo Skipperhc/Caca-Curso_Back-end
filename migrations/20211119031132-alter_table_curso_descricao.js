@@ -7,14 +7,14 @@ module.exports = {
         'Curso',
         'Descricao',
         {
-          type: Sequelize.STRING
+          type: Sequelize.TEXT
         }
       ),
       queryInterface.addColumn(
         'Curso',
         'Provider',
         {
-          type: Sequelize.STRING
+          type: Sequelize.TEXT
         }
       ),
     ]);
