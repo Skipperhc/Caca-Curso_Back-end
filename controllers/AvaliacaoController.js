@@ -43,6 +43,19 @@ const getAll = async (req, res) => {
     }
 };
 
+const getAllRatingCurso = async (req, res) => {
+    try {
+        const avaliacoes = await avaliacaoService.getByIdCurso(req.params.id);
+
+        res.status(200).json(avaliacoes);
+    } catch (err) {
+        res.status(404).json({
+            message: `Erro ao buscar avaliações!`,
+            error: err.toString(),
+        });
+    }
+};
+
 const create = async ({ body }, res) => {
     try {
         const newAvaliacao = await avaliacaoService.create(body);
@@ -94,6 +107,7 @@ const remove = async (req, res) => {
 module.exports = {
     getById,
     getByIdCursoUsuario,
+    getAllRatingCurso,
     getAll,
     create,
     update,

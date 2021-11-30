@@ -29,6 +29,24 @@ const getByIdCursoUsuario = async (cursoId, usuarioId) => {
     return avaliacao;
 };
 
+const getByIdCurso = async (cursoId) => {
+    const avaliacoes = await models.Avaliacao.findAll({
+        include: {            
+            as: 'Usuario',
+            model: models.Usuario            
+        },
+        where: {
+            Curso_id: cursoId
+        },
+    });
+
+    if (!avaliacoes) {
+        return null
+    }
+
+    return avaliacoes;
+};
+
 // exemplo com select entre tabelas
 const getAllWithJoins = async () => {
     const avaliacoes = await models.Avaliacao.findAll({
@@ -107,6 +125,7 @@ module.exports = {
     getAll,
     getByIdCursoUsuario,
     getAllWithJoins,
+    getByIdCurso,
     create,
     update,
     remove,
